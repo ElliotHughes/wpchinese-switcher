@@ -55,7 +55,7 @@ use Overtrue\PHPOpenCC\Strategy;
 
 add_action('wp_enqueue_scripts', 'wpcs_add_global_js');
 function wpcs_add_global_js () {
-    wp_register_script( 'wpcs-block-script-ok', plugins_url( '/assets/js/wpcs-block-script-ok.js', __FILE__ ), array( 'wp-blocks', 'wp-element' ), time() . '' );
+    wp_register_script( 'wpcs-block-script-ok', plugins_url( '/assets/js/wpcs-block-script-ok.js', __FILE__ ), array( 'wp-blocks', 'wp-element' ), '1.1.0' );
     wp_enqueue_script( 'wpcs-block-script-ok');
 }
 
@@ -76,7 +76,7 @@ $wpcs_langs = array(
     'zh-cn' => array('zhconversion_cn', 'cntip', '简体中文', 'zh-CN'),
     'zh-tw' => array('zhconversion_tw', 'twtip', '繁体中文', 'zh-TW'),
     'zh-hk' => array('zhconversion_hk', 'hktip', '港澳繁体', 'zh-HK'),
-    'zh-jp' => array('zhconversion_jp', 'jptip', '日本语', 'zh-JP'),
+    // 'zh-jp' => array('zhconversion_jp', 'jptip', '日本语', 'zh-JP'),
     /*
 'zh-hans' => array('zhconversion_hans', 'hanstip', '简体中文','zh-Hans'),
 'zh-hant' => array('zhconversion_hant', 'hanttip', '繁体中文','zh-Hant'),
@@ -617,7 +617,7 @@ function zhconversion_cn($str) {
 }
 
 function zhconversion_tw($str) {
-    return OpenCC::convert($str, strategy::S2TW);
+    return OpenCC::convert($str, strategy::SIMPLIFIED_TO_TAIWAN_WITH_PHRASE);
     // global $zh2Hant;
 
     // return strtr(OpenCC::convert($str, strategy::S2TW), $zh2Hant);
@@ -806,9 +806,11 @@ function wpcs_get_noconversion_url() {
            $_SERVER['HTTP_HOST'] .
            $_SERVER['REQUEST_URI'];
     $tmp = trim(strtolower(remove_query_arg('variant', $tmp)));
-
+    
     if (preg_match('/^(.*)\/(' . $reg . '|zh|zh-reset)(\/.*)?$/', $tmp, $matches)) {
-        $tmp = user_trailingslashit(trailingslashit($matches[1]) . ltrim($matches[3], '/')); //为什幺这样写代码? 是有原因的- -(众人: 废话!)
+        // 出现在url路径下面会有问题
+        // 优先使用参数再使用路径内的语言
+        $tmp = user_trailingslashit(trailingslashit($matches[1]) . ltrim($matches[3] ?? $matches[2], '/')); //为什幺这样写代码? 是有原因的- -(众人: 废话!)
         if ($tmp == get_option('home')) {
             $tmp .= '/';
         }
@@ -1013,11 +1015,11 @@ function wpcs_output_navi($args = '', $isReturn = false) {
 
     $output = "\n" . '<div id="wpcs_widget_inner"><!--wpcs_NC_START-->' . "\n";
     if ($wpcs_translate_type == 0) {
-        $output .= '	<span id="wpcs_original_link" class="' . ($wpcs_target_lang == false ? 'wpcs_current_lang' : 'wpcs_lang') . '" ><a class="wpcs_link" href="' . esc_url($default_url) . '" title="' . esc_html($noconverttip) . '">' . esc_html($noconverttip) . '</a></span>' . "\n";
+        $output .= '	<span id="wpcs_original_link" class="' . ($wpcs_target_lang == false ? 'wpcs_current_lang' : 'wpcs_lang') . '" ><a class="wpcs_link" href="' . esc_url($default_url) . '" title="' . esc_html($noconverttip) . '" langvar="">' . esc_html($noconverttip) . '</a></span>' . "\n";
     
         foreach ($wpcs_langs_urls as $key => $value) {
             $tip    = ! empty($wpcs_options[$wpcs_langs[$key][1]]) ? esc_html($wpcs_options[$wpcs_langs[$key][1]]) : $wpcs_langs[$key][2];
-            $output .= '	<span id="wpcs_' . $key . '_link" class="' . ($wpcs_target_lang == $key ? 'wpcs_current_lang' : 'wpcs_lang') . '" ><a class="wpcs_link" rel="nofollow" href="' . esc_url($value) . '" title="' . esc_html($tip) . '" >' . esc_html($tip) . '</a></span>' . "\n";
+            $output .= '	<span id="wpcs_' . $key . '_link" class="' . ($wpcs_target_lang == $key ? 'wpcs_current_lang' : 'wpcs_lang') . '" ><a class="wpcs_link" rel="nofollow" href="' . esc_url($value) . '" title="' . esc_html($tip) . '" langvar="'.$key.'">' . esc_html($tip) . '</a></span>' . "\n";
         }
     } else if ($wpcs_translate_type == 1) {
         $checkSelected = function ($selected_lang) use ($wpcs_target_lang) {
@@ -1027,7 +1029,7 @@ function wpcs_output_navi($args = '', $isReturn = false) {
         $output .= sprintf('<option id="wpcs_original_link" value="" %s>%s</option>', $checkSelected(''),esc_html($noconverttip));
         foreach ($wpcs_langs_urls as $key => $value) {
             $tip    = ! empty($wpcs_options[$wpcs_langs[$key][1]]) ? esc_html($wpcs_options[$wpcs_langs[$key][1]]) : $wpcs_langs[$key][2];
-            $output .= sprintf('<option id="wpcs_%s_link" class="%s" value="%s" %s>%s</option>', $key,($currentLang == $key ? 'wpcs_current_lang' : 'wpcs_lang'), $key, $checkSelected($key),esc_html($tip));
+            $output .= sprintf('<option id="wpcs_%s_link" class="%s" value="%s" %s>%s</option>', $key,($wpcs_target_lang == $key ? 'wpcs_current_lang' : 'wpcs_lang'), $key, $checkSelected($key),esc_html($tip));
         }
         
         $output .= sprintf('</select>');
@@ -1560,7 +1562,7 @@ function wpcs_do_conversion() {
 function my_plugin_enqueue_block_editor_assets() {
     global $wpcs_options;
     set_wpcs_langs_urls();
-    wp_register_script( 'wpcs-block-script', plugins_url( '/assets/js/gudengbao.js', __FILE__ ), array( 'wp-blocks', 'wp-element' ), time() . '' );
+    wp_register_script( 'wpcs-block-script', plugins_url( '/assets/js/gudengbao.js', __FILE__ ), array( 'wp-blocks', 'wp-element' ), '1.1.0' );
     wp_enqueue_script( 'wpcs-block-script');
     // naviArray
     $html = wpcs_output_navi('', true);
@@ -1579,7 +1581,8 @@ function my_plugin_enqueue_block_editor_assets() {
             $aProps[] = [
                 'id' => $span->getAttribute('id'),
                 'className' => $span->getAttribute('class'),
-                'variant' => $variantArr['variant'] ?? '',
+                // 'variant' => $variantArr['variant'] ?? '',
+                'variant' => $a->getAttribute('langvar'),
                 'href' => $a->getAttribute('href'),
                 'title' => $a->getAttribute('title'),
                 'innerText' => $a->nodeValue
