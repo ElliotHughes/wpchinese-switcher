@@ -75,7 +75,7 @@ $wpcs_target_lang            = false;
 $wpcs_langs = array(
     'zh-cn' => array('zhconversion_cn', 'cntip', '简体中文', 'zh-CN'),
     'zh-tw' => array('zhconversion_tw', 'twtip', '繁体中文', 'zh-TW'),
-    'zh-hk' => array('zhconversion_hk', 'hktip', '港澳繁体', 'zh-HK'),
+    'zh-hk' => array('zhconversion_hk', 'hktip', '香港繁体', 'zh-HK'),
     // 'zh-jp' => array('zhconversion_jp', 'jptip', '日本语', 'zh-JP'),
     /*
 'zh-hans' => array('zhconversion_hans', 'hanstip', '简体中文','zh-Hans'),
