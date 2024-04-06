@@ -155,6 +155,15 @@ function wpcs_init() {
 }
 
 /**
+ * 短码
+ */
+function wpchinese_switcher_shortcode() { 
+    set_wpcs_langs_urls();
+    return wpcs_output_navi('', true);
+}
+add_shortcode('wpchinese-switcher', 'wpchinese_switcher_shortcode');
+
+/**
  * 修复首页显示Page时繁简转换页仍然显示最新posts的问题
  * dirty but should works
  * based on wp 3.5
