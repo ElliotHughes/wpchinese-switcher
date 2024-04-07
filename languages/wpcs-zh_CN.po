@@ -1,0 +1,447 @@
+# Copyright (C) 2024 WenPai.org
+# This file is distributed under the GPLv3 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Chinese Switcher 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wpchinese-switcher\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-04-07T11:34:02+08:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.10.0\n"
+"X-Domain: wpchinese-switcher\n"
+
+#. Plugin Name of the plugin
+#: wpchinese-switcher.php
+msgid "WP Chinese Switcher"
+msgstr ""
+
+#. Description of the plugin
+#: wpchinese-switcher.php
+msgid "Adds the language conversion function between Chinese Simplified and Chinese Traditional to your WP Website."
+msgstr ""
+
+#. Author of the plugin
+#: wpchinese-switcher.php
+msgid "WenPai.org"
+msgstr ""
+
+#. Author URI of the plugin
+#: wpchinese-switcher.php
+msgid "https://wenpai.org"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:114
+msgid "安装WP Super Cache 兼容成功."
+msgstr ""
+
+#: wpchinese-switcher-admin.php:116
+msgid "错误: 安装WP Super Cache 兼容失败"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:121
+msgid "卸载WP Super Cache 兼容成功"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:123
+msgid "错误: 卸载WP Super Cache 兼容失败"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:260
+msgid "版本 %s"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:260
+#: wpchinese-switcher-admin.php:261
+msgid "文派开源"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:262
+msgid "插件主页"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:266
+msgid "基础设置"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:268
+msgid "高级设置"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:279
+msgid "自定义\"不转换\"标签名"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:281
+msgid "本插件输出的widget中将包含当前页面原始版本链接, 您可以在这里自定义其显示的名称. 如果留空则使用默认的\"不转换\"."
+msgstr ""
+
+#: wpchinese-switcher-admin.php:294
+msgid "对下面几种中文开启转换功能"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:296
+msgid "未选中的中文语言将不被使用,此项设置为全局设置。您应该选中至少一种中文语言,否则本插件全部功能都不会工作。在每个复选框后的文本输入框里可以输入该语言自定义名称, 如果留空会使用默认值."
+msgstr ""
+
+#: wpchinese-switcher-admin.php:296
+msgctxt "list of languages"
+msgid "(\"简体中文\", \"繁体中文\"...)"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:305
+msgid "请输入展示名称(默认值如左)"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:314
+msgid "展示形式"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:316
+msgid "修改语言切换按钮的展现形式"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:324
+msgid "平铺"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:327
+msgid "下拉列表"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:335
+msgid "文搜索关键词简繁转换"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:338
+msgid ""
+">本选项将增强WordPress搜索功能, 使其对中文关键词繁简统一处理.\n"
+"                  例如搜索\"<!--wpcs_NC_START--><code>网络</code><!--wpcs_NC_END-->\"时, 数据库里含有\"\n"
+"                        <!--wpcs_NC_START--><code>网络</code><!--wpcs_NC_END-->\",\n"
+"                  \"<!--wpcs_NC_START--><code>网络</code><!--wpcs_NC_END-->\" 和\"<!--wpcs_NC_START--><code>网络</code>\n"
+"                        <!--wpcs_NC_END-->\"的文章都会放到搜索结果里返回.\n"
+"                  支持多个中文词语搜索, 如搜索\"<!--wpcs_NC_START--><code>简体 繁体</code><!--wpcs_NC_END-->\"时,\n"
+"                  含有\"<!--wpcs_NC_START--><code>简体</code><!--wpcs_NC_END-->\"和\"<!--wpcs_NC_START--><code>繁体</code>\n"
+"                        <!--wpcs_NC_END-->\"两个词的文章也会被返回.\n"
+"                  (此功能将增加搜索时数据库负担)"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:353
+msgid "开启"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:356
+msgid "关闭"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:359
+msgid "仅当中文语言不是\"不转换\"时开启(默认值)"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:367
+msgid "识别浏览器中文语言动作"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:370
+msgid "本项设置不会应用于搜索引擎."
+msgstr ""
+
+#: wpchinese-switcher-admin.php:371
+msgid "如果本选项设置不为\"关闭\", 进程将识别访客浏览器首选中文语言。"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:372
+msgid "如果设置为\"跳转到对应繁简版本页面\", 进程将302重定向到当前页面的访客浏览器首选语言版本。"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:373
+msgid "如果设置为\"直接显示对应繁简版本内容\",进程将直接显示对应中文转换版本内容而不进行重定向。"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:374
+msgid "如果本选项设置为\"直接显示对应繁简版本内容\", 必须把下一个选项\"使用Cookie保存并识别用户语言偏好\"关闭或也设置为直接显示对应繁简版本,否则本插件只会在浏览器第一次访问时直接显示, 其他情况跳转。"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:376
+msgid "关于\"允许繁简语系内部通用\"复选项说明:"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:377
+msgid "只有当\"识别浏览器动作\"选项不为\"关闭\"时该复选框才有效。具体说明，"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:378
+msgid "假如您在本页第一项设置里禁用了部分中文,如zh-hk, 那幺浏览器里语言设置里只有\"<!--wpcs_NC_START--> 港澳繁体 <!--wpcs_NC_END--> \"的用户访问时默认不会被识别;"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:379
+msgid ""
+"但如果选中了此复选框,只要您开启了\"<!--wpcs_NC_START--> 繁体中文<!--wpcs_NC_END--> \", \"\n"
+"                        <!--wpcs_NC_START--> 台湾正体\n"
+"                        <!--wpcs_NC_END--> \"\n"
+"                  或 \"<!--wpcs_NC_START--> 港澳繁体<!--wpcs_NC_END--> \" 中任一种语言, 浏览器使用这三种语言的用户都会被本插件识别并根据选项做出动作."
+msgstr ""
+
+#: wpchinese-switcher-admin.php:383
+msgid "(但此时页面被转换后的语言可能并不是用户浏览器设置的那种, 而是您开启的那种繁体语言)。简体语系同理。"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:391
+#: wpchinese-switcher-admin.php:426
+msgid "直接显示对应繁简版本内容"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:394
+#: wpchinese-switcher-admin.php:429
+msgid "跳转到对应繁简版本页面"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:397
+#: wpchinese-switcher-admin.php:432
+msgid "关闭此功能(默认值)"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:402
+#: wpchinese-switcher-admin.php:438
+msgid "允许繁简语系内部通用"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:408
+msgid "使用Cookie保存并识别用户语言偏好"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:410
+msgid ""
+"<b>本项设置不会应用于搜索引擎.</b> 如果开启这项设置,本插件将自动保存访客的语言选择.举例而言,\n"
+"                  当用户通过 \""
+msgstr ""
+
+#: wpchinese-switcher-admin.php:414
+msgid "这个链接访问了您网站的台湾繁体版本时,进程将保存信息到Cookie中. 如果该用户重启浏览器并通过"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:416
+msgid ""
+"再次访问您网站时,\n"
+"                  则会被自动跳转到台湾繁体版本的地址. 如果设置为\"直接显示对应繁简版本\",则不会进行跳转.\n"
+"                  (参见上一项的说明)<br/><br/><b>本选项和上一项\"识别浏览器\"选项与缓存插件不兼容</b>.如果您使用了WP Super Cache/ Hyper Cache之类Cache插件,\n"
+"                  请把这两项设置均设为\"关闭\",否则这两个功能不但不会正常工作, 而且可能造成缓存异常.</span>\n"
+"                </span>"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:444
+msgid "不转换文章中某些HTML标签里中文"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:447
+msgid "这里输入的HTML标签里内容将不进行中文繁简转换(仅适用文章内容), 保持原样输出。请输入HTML标签名,"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:448
+msgid "如"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:449
+msgid "多个HTML标签之间以"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:449
+msgid "分割, 如"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:450
+msgid "支持部分基本的"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:450
+msgid "CSS选择器"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:450
+msgid "的DOM筛选语法，如"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:452
+msgid "如果遇到html错误, 请关闭此选项."
+msgstr ""
+
+#: wpchinese-switcher-admin.php:459
+msgid "默认空"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:465
+msgid "不转换日语(lang=\"ja\")的HTML标签里内容"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:468
+msgid "如果选中此选项, 文章内容中用 lang=\"ja\" 标记为日本语的html tag将不进行繁简转换, 保持原样输出。"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:469
+msgid "例如:"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:470
+msgid "中的CJK汉字"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:470
+msgid "和"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:470
+msgid "将不会进行繁简转换。"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:471
+msgid "如果遇到html错误, 请关闭此选项。"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:477
+msgid "(默认关闭)"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:482
+msgid "不转换HTML中任意内容TAG"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:484
+msgid ""
+"HTML中所有位于 <!--wpcs_NC_START--> 和 <!--wpcs_NC_END-->之间的内容将不会进行繁简转换,\n"
+"                                            保持原样输出.\n"
+"                                            您可以在模板或post内容中使用这个标签.<br/>您可以选择在WordPress的文章编辑器(html模式)工具栏中插入一个按钮(显示为\"wpcs_NC\"), 方便快速在文章中插入这个标签."
+msgstr ""
+
+#: wpchinese-switcher-admin.php:494
+msgid "在WordPress文章html编辑器中添加\"不转换中文\"的Quick tag"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:500
+msgid "繁简转换页面永久链接格式"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:503
+msgid ""
+"更改此项设置前,<b>请仔细阅读下面的说明:</b><br/>本项设置决定插件生成的繁简转换页面Permalink.\n"
+"                                        默认的形式为您原始Permalink后加上?variant=zh-tw参数.(zh-tw为当前请求的语言代码) .您可以修改这个permalink形式.本插件提供两种非默认的Permalink格式:\n"
+"                                        您原始的Permalink后加上/zh-tw 或/zh-tw/; 或/zh-tw后加上您原来Permalink. 两种区别在于中文语言代码(zh-tw)附加在您原来Permalink的末尾或开头.\n"
+"                                        URL末尾是否有 / 取决于您的WordPress永久链接末尾是否有/. 但<b>首页的繁简转换版本URL末尾永远有 \"/\"</b>. 如果您的WordPress未开启永久链接,\n"
+"                                        本项设置只能选择第一种URL形式."
+msgstr ""
+
+#: wpchinese-switcher-admin.php:527
+msgid "对页面内容整体转换"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:530
+msgid ""
+"开启此选项后,插件将对WordPress输出的全部页面内容进行中文整体转换(使用ob_start和ob_flush函数),\n"
+"                                        这将极大提高页面生成速度并减少资源使用.但也可能造成意想不到问题.如果遇到异常(包括中文转换错误, HTML页面错误或php错误等),请关闭此选项."
+msgstr ""
+
+#: wpchinese-switcher-admin.php:538
+msgid "(默认开启)"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:544
+msgid "保存选项"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:560
+msgid "WP Super Cache兼容"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:563
+msgid "默认情况下, 本插件的\"识别浏览器中文语言动作\"和\"使用Cookie保存并识别用户语言偏好\"这两个功能与缓存插件不兼容. 如果您使用的是"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:563
+msgid "WP Super Cache"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:563
+msgid "的\"Legacy page caching\"缓存模式, 您可以点击下面的按钮安装WP Super Cache兼容. "
+msgstr ""
+
+#: wpchinese-switcher-admin.php:563
+msgid "注意: 如果您没有开启\"识别浏览器中文语言动作\"和\"使用Cookie保存并识别用户语言偏好\"这两个功能(默认均为关闭), 则无需安装此兼容"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:563
+msgid "安装本兼容将增加WP Super Cache的缓存磁盘空间占用; "
+msgstr ""
+
+#: wpchinese-switcher-admin.php:563
+msgid "仅支持WP Super Cache插件的\"Legacy page caching\"模式, 不支持\"PHP Cache\"和\"mod_rewrite cache\"模式. (WP Super Cache 插件安装后默认为\"PHP Cache\"模式, 您必须手动切换到\"Legacy\"模式.)"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:574
+msgid "已安装"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:576
+msgid "未开启\"识别浏览器中文语言动作\"和\"使用Cookie保存并识别用户语言偏好\"功能. 无需安装"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:578
+msgid "未安装"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:584
+msgid "WP Super Cache未开启缓存"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:586
+msgid "警告: WP Super Cache未设为\"legacy page caching\"模式, 本兼容模块无法正常工作."
+msgstr ""
+
+#: wpchinese-switcher-admin.php:596
+msgid "未使用WP Super Cache插件"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:598
+msgid "安装兼容"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:600
+msgid "卸载兼容"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:614
+msgid "卸载本插件:"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:619
+msgid "确定卸载本插件?"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:622
+msgid "这将清除数据库options表中本插件的设置项(键值为wpcs_options), 提交后还需要到wordpress插件管理菜单里禁用本插件."
+msgstr ""
+
+#: wpchinese-switcher-admin.php:629
+msgid "确认卸载 (此操作不可逆)"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:634
+msgid "卸载插件"
+msgstr ""
+
+#: wpchinese-switcher-admin.php:653
+msgid "默认/ 默认"
+msgstr ""
+
+#: wpchinese-switcher.php:76
+msgid "简体中文"
+msgstr ""
+
+#: wpchinese-switcher.php:77
+msgid "繁体中文"
+msgstr ""
+
+#: wpchinese-switcher.php:78
+msgid "香港繁体"
+msgstr ""
