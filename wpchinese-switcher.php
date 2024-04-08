@@ -55,8 +55,10 @@ use Overtrue\PHPOpenCC\Strategy;
 
 add_action('wp_enqueue_scripts', 'wpcs_add_global_js');
 function wpcs_add_global_js () {
-    wp_register_script( 'wpcs-block-script-ok', plugins_url( '/assets/js/wpcs-block-script-ok.js', __FILE__ ), array( 'wp-blocks', 'wp-element' ), '1.1.0' );
+    global $wpcs_options;
+    wp_register_script( 'wpcs-block-script-ok', plugins_url( '/assets/js/wpcs-block-script-ok.js', __FILE__ ), array( 'wp-blocks', 'wp-element' ), '1.2.0' );
     wp_enqueue_script( 'wpcs-block-script-ok');
+    wp_localize_script('wpcs-block-script-ok', 'wpc_switcher_use_permalink', array('type' => $wpcs_options['wpcs_use_permalink']));
 }
 
 $wpcs_options = get_option('wpcs_options');
@@ -321,15 +323,7 @@ var wpcs_target_lang=\"$wpcs_target_lang\";var wpcs_noconversion_url=\"$wpcs_noc
 function wpcs_template_redirect() {
     global $wpcs_noconversion_url, $wpcs_langs_urls, $wpcs_options, $wpcs_target_lang, $wpcs_redirect_to;
 
-    if ($wpcs_noconversion_url == get_option('home') . '/' && $wpcs_options['wpcs_use_permalink']) {
-        foreach ($wpcs_options['wpcs_used_langs'] as $value) {
-            $wpcs_langs_urls[$value] = $wpcs_noconversion_url . $value . '/';
-        }
-    } else {
-        foreach ($wpcs_options['wpcs_used_langs'] as $value) {
-            $wpcs_langs_urls[$value] = wpcs_link_conversion($wpcs_noconversion_url, $value);
-        }
-    }
+    set_wpcs_langs_urls();
 
     if ( ! is_404() && $wpcs_redirect_to) {
         setcookie('wpcs_is_redirect_' . COOKIEHASH, '1', 0, COOKIEPATH, COOKIE_DOMAIN);
@@ -774,8 +768,11 @@ function wpcs_link_conversion($link, $variant = null) {
     if ($wpcs_options['wpcs_use_permalink'] == 1) {
         return user_trailingslashit(trailingslashit($link) . $variant);
     }
-
-    return preg_replace('#^(http(s?)://[^/]+' . $wpcs_wp_home . ')#', '\\1' . $variant . '/', $link);
+    $pattern = '#^(https?://[^/]+)#'; 
+    $replacement = '$1/' . $variant;
+    $new_url = preg_replace($pattern, $replacement, $link);
+    return $new_url;
+    // return preg_replace('#^(http(s?)://[^/]+' . $wpcs_wp_home . ')#', '\\1' . $variant . '/', $link);
 }
 
 /**
@@ -819,7 +816,7 @@ function wpcs_get_noconversion_url() {
     if (preg_match('/^(.*)\/(' . $reg . '|zh|zh-reset)(\/.*)?$/', $tmp, $matches)) {
         // 出现在url路径下面会有问题
         // 优先使用参数再使用路径内的语言
-        $tmp = user_trailingslashit(trailingslashit($matches[1]) . ltrim($matches[3] ?? $matches[2], '/')); //为什幺这样写代码? 是有原因的- -(众人: 废话!)
+        $tmp = user_trailingslashit(trailingslashit($matches[1]) . ltrim($matches[3] ?? '', '/')); //为什幺这样写代码? 是有原因的- -(众人: 废话!)
         if ($tmp == get_option('home')) {
             $tmp .= '/';
         }
@@ -1028,6 +1025,7 @@ function wpcs_output_navi($args = '', $isReturn = false) {
     
         foreach ($wpcs_langs_urls as $key => $value) {
             $tip    = ! empty($wpcs_options[$wpcs_langs[$key][1]]) ? esc_html($wpcs_options[$wpcs_langs[$key][1]]) : $wpcs_langs[$key][2];
+            if ($wpcs_target_lang) $tip = zhconversion($tip);
             $output .= '	<span id="wpcs_' . $key . '_link" class="' . ($wpcs_target_lang == $key ? 'wpcs_current_lang' : 'wpcs_lang') . '" ><a class="wpcs_link" rel="nofollow" href="' . esc_url($value) . '" title="' . esc_html($tip) . '" langvar="'.$key.'">' . esc_html($tip) . '</a></span>' . "\n";
         }
     } else if ($wpcs_translate_type == 1) {
@@ -1038,6 +1036,7 @@ function wpcs_output_navi($args = '', $isReturn = false) {
         $output .= sprintf('<option id="wpcs_original_link" value="" %s>%s</option>', $checkSelected(''),esc_html($noconverttip));
         foreach ($wpcs_langs_urls as $key => $value) {
             $tip    = ! empty($wpcs_options[$wpcs_langs[$key][1]]) ? esc_html($wpcs_options[$wpcs_langs[$key][1]]) : $wpcs_langs[$key][2];
+            if ($wpcs_target_lang) $tip = zhconversion($tip);
             $output .= sprintf('<option id="wpcs_%s_link" class="%s" value="%s" %s>%s</option>', $key,($wpcs_target_lang == $key ? 'wpcs_current_lang' : 'wpcs_lang'), $key, $checkSelected($key),esc_html($tip));
         }
         
@@ -1571,7 +1570,7 @@ function wpcs_do_conversion() {
 function my_plugin_enqueue_block_editor_assets() {
     global $wpcs_options;
     set_wpcs_langs_urls();
-    wp_register_script( 'wpcs-block-script', plugins_url( '/assets/js/gudengbao.js', __FILE__ ), array( 'wp-blocks', 'wp-element' ), '1.1.0' );
+    wp_register_script( 'wpcs-block-script', plugins_url( '/assets/js/gudengbao.js', __FILE__ ), array( 'wp-blocks', 'wp-element' ), '1.2.0' );
     wp_enqueue_script( 'wpcs-block-script');
     // naviArray
     $html = wpcs_output_navi('', true);
