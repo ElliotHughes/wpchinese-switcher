@@ -56,8 +56,8 @@ use Overtrue\PHPOpenCC\Strategy;
 add_action('wp_enqueue_scripts', 'wpcs_add_global_js');
 function wpcs_add_global_js () {
     global $wpcs_options;
-    wp_register_script('wpcs-variant', plugins_url('/assets/js/dist/wpcs-variant.umd.js', __FILE__), array(), time().'1');
-    wp_register_script( 'wpcs-block-script-ok', plugins_url( '/assets/js/wpcs-block-script-ok.js', __FILE__ ), array( 'wp-blocks', 'wp-element', 'wpcs-variant' ), '1.2.0' . time() );
+    wp_register_script('wpcs-variant', plugins_url('/assets/js/dist/wpcs-variant.umd.js', __FILE__), array(), '1.1.0');
+    wp_register_script( 'wpcs-block-script-ok', plugins_url( '/assets/js/wpcs-block-script-ok.js', __FILE__ ), array( 'wp-blocks', 'wp-element', 'wpcs-variant' ), '1.3.0' );
     wp_enqueue_script( ['wpcs-variant', 'wpcs-block-script-ok']);
     wp_localize_script('wpcs-block-script-ok', 'wpc_switcher_use_permalink', array('type' => $wpcs_options['wpcs_use_permalink']));
 
