@@ -150,6 +150,35 @@ class wpcs_Admin {
         </script>
         <div class="wrap">
             <style>
+            
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {
+    font-family: "Source Han Sans SC", "Noto Sans CJK SC", "Source Han Sans CN", "Noto Sans SC", "Source Han Sans TC", "Noto Sans CJK TC", sans-serif, -apple-system, "Noto Sans", "Helvetica Neue", Helvetica, "Nimbus Sans L", Arial, "Liberation Sans", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Source Han Sans CN", "Microsoft YaHei", "Wenquanyi Micro Hei", "WenQuanYi Zen Hei", "ST Heiti", SimHei, "WenQuanYi Zen Hei Sharp", sans-serif;
+}            
+
+.wrap {
+    margin: 3% 2%;
+    max-width: 1128px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}            
+.form-table td {
+    margin-bottom: 9px;
+    padding: 3% 2%;
+    line-height: 2;
+    vertical-align: middle;
+}            
+hr {
+    border-top: 1px solid #6a6a6a;
+    border-bottom: 0px solid #6a6a6a;
+} 
+div#wpcs_block_cache {
+    padding: 3% 2%;
+}
+
+form#wpcso_uninstall_form {
+    padding: 3% 2%;
+}
                 .tooltip {
                     position: relative;
                     display: inline-block;
@@ -161,10 +190,10 @@ class wpcs_Admin {
                     width: 400px; /* 宽度可以根据内容调整 */
                     background-color: #555; /* 深灰色背景 */
                     color: #fff; /* 文字颜色 */
-                    text-align: center;
-                    padding: 5px 10px; /* 上下填充5px，左右填充10px */
+                    padding: 15px 20px; /* 上下填充5px，左右填充10px */
                     border-radius: 6px; /* 圆角 */
-
+                    zoom: 85%;
+                    font-weight: 300;
                     /* 位置 */
                     position: absolute;
                     z-index: 1;
@@ -185,15 +214,12 @@ class wpcs_Admin {
                     opacity: 1;
                 }
 
-                .tooltip::after {
-                    content: "?";
-                    background-color: #f9f9f9; /* 浅灰色背景 */
-                    color: #555; /* 深灰色文字 */
-                    padding: 0 5px; /* 左右填充 */
-                    border-radius: 50%; /* 圆形 */
-                    font-weight: bold; /* 加粗字体 */
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 阴影效果 */
-                }
+.tooltip::after {
+    font-family: 'dashicons';
+    content: "\f223";
+    padding: 2px 5px;
+    font-size: 18px;
+}
 
 
                 .tab button {
@@ -214,13 +240,18 @@ class wpcs_Admin {
                     background-color: #ccc;
                 }
 
-                .tabcontent {
-                    display: none;
-                    padding: 6px 12px;
-                    border: 1px solid #ccc;
-                    border-top: none;
-                    clear: both; /* 防止内容显示在Tab按钮的右侧 */
-                }
+.tabcontent {
+    display: none;
+    padding: 5% 2%;
+    border: 1px solid #ccc;
+    border-top: none;
+    clear: both;
+    border: 1px solid #c3c4c7;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    background: #fff;
+    box-sizing: border-box;
+}
+
             </style>
 
             <script>
@@ -276,9 +307,9 @@ class wpcs_Admin {
                         <tbody>
 
                         <tr>
-                        <td valign="top" width="30%"><?php _e('自定义"不转换"标签名', 'wpchinese-switcher'); ?>
+                        <td valign="top" width="30%"><?php _e('自定义<code>"不转换"</code>标签名称', 'wpchinese-switcher'); ?>
   <span class="tooltip">
-    <span class="tooltiptext"><?php _e('本插件输出的widget中将包含当前页面原始版本链接, 您可以在这里自定义其显示的名称. 如果留空则使用默认的"不转换".', 'wpchinese-switcher'); ?></span>
+    <span class="tooltiptext"><?php _e('注意：本插件的自带小工具中将包含当前页面原始版本链接, 您可在此自定义其显示名称。留空则使用默认的"不转换"。', 'wpchinese-switcher'); ?></span>
   </span>
 </td>
                 </span>
@@ -291,9 +322,9 @@ class wpcs_Admin {
                         </tr>
 
                         <tr>
-                        <td valign="top" width="30%"><?php _e('对下面几种中文开启转换功能', 'wpchinese-switcher'); ?>
+                        <td valign="top" width="30%"><?php _e('选择可用的中文语系模块', 'wpchinese-switcher'); ?>
   <span class="tooltip">
-    <span class="tooltiptext"><?php _e('未选中的中文语言将不被使用,此项设置为全局设置。您应该选中至少一种中文语言,否则本插件全部功能都不会工作。在每个复选框后的文本输入框里可以输入该语言自定义名称, 如果留空会使用默认值.', 'wpchinese-switcher'); ?> <!--wpcs_NC_START--><?php _ex('("简体中文", "繁体中文"...)', 'list of languages', 'wpchinese-switcher'); ?><!--wpcs_NC_END--></span>
+    <span class="tooltiptext"><?php _e("注意：此项为全局设置，请至少勾选一种中文语言，否则插件无法正常运行。支持自定义名称，留空为默认值", 'wpchinese-switcher'); ?>。</span>
   </span>
 </td>
                             <td><!--wpcs_NC_START-->
@@ -302,7 +333,7 @@ class wpcs_Admin {
                                        name="wpcso_variant_<?php echo $key; ?>"<?php echo in_array( $key, $this->options['wpcs_used_langs'] ) ? ' checked="checked"' : ''; ?> />
                                 <label for="wpcso_variant_<?php echo $key; ?>"><?php $str = $value[2] . ' (' . $key . ')';
 									echo str_replace( ' ', '&nbsp;', str_pad( $str, 14 + strlen( $str ) - mb_strlen( $str ) ) ); ?></label>
-                                <input type="text" placeholder="<?php esc_attr_e('请输入展示名称(默认值如左)', 'wpchinese-switcher'); ?>"
+                                <input type="text" placeholder="<?php esc_attr_e('请输入显示名（默认值如左）', 'wpchinese-switcher'); ?>"
                                        style="width: 200px;margin-bottom: 5px"
                                        name="<?php echo $this->langs[ $key ][1]; ?>"
                                        value="<?php echo ! empty( $this->options[ $value[1] ] ) ? esc_html( $this->options[ $value[1] ] ) : ''; ?>"/><br/>
@@ -311,9 +342,9 @@ class wpcs_Admin {
                         </tr>
 
                         <tr>
-                            <td valign="top" width="30%"><?php _e('展示形式', 'wpchinese-switcher'); ?>
+                            <td valign="top" width="30%"><?php _e('简繁切换按钮的展示形式', 'wpchinese-switcher'); ?>
                                 <span class="tooltip">
-                                    <span class="tooltiptext"><?php _e('修改语言切换按钮的展现形式', 'wpchinese-switcher'); ?></span>
+                                    <span class="tooltiptext"><?php _e('注意：插件内置了两种模式，您可以修改语言切换按钮的展现方式来满足个性化需求，或使用底部转换 URL 链接自行调用。', 'wpchinese-switcher'); ?></span>
                                 </span>
                             </td>
                             <td>
@@ -332,18 +363,18 @@ class wpcs_Admin {
 
                         <tr>
                             <td scope="row" valign="top" width="30%">
-                                <?php _e( '文搜索关键词简繁转换', 'wpchinese-switcher' ) ?>
+                                <?php _e( '中文搜索关键词简繁转换', 'wpchinese-switcher' ) ?>
                                 <span class="tooltip">
                                     <span class="tooltiptext">
-                                        <?php _e('>本选项将增强WordPress搜索功能, 使其对中文关键词繁简统一处理.
-                  例如搜索"<!--wpcs_NC_START--><code>网络</code><!--wpcs_NC_END-->"时, 数据库里含有"
+                                        <?php _e('注意：此选项将增强 WordPress 对中文繁简关键词的搜索能力。</br><hr>
+                  1、例如搜索"<!--wpcs_NC_START--><code>网络</code><!--wpcs_NC_END-->"时, 数据库里含有"
                         <!--wpcs_NC_START--><code>网络</code><!--wpcs_NC_END-->",
                   "<!--wpcs_NC_START--><code>网络</code><!--wpcs_NC_END-->" 和"<!--wpcs_NC_START--><code>网络</code>
-                        <!--wpcs_NC_END-->"的文章都会放到搜索结果里返回.
-                  支持多个中文词语搜索, 如搜索"<!--wpcs_NC_START--><code>简体 繁体</code><!--wpcs_NC_END-->"时,
+                        <!--wpcs_NC_END-->"的文章都会放到搜索结果里返回。</br>
+                  2、支持多个中文词语搜索, 如搜索"<!--wpcs_NC_START--><code>简体 繁体</code><!--wpcs_NC_END-->"时,
                   含有"<!--wpcs_NC_START--><code>简体</code><!--wpcs_NC_END-->"和"<!--wpcs_NC_START--><code>繁体</code>
-                        <!--wpcs_NC_END-->"两个词的文章也会被返回.
-                  (此功能将增加搜索时数据库负担)', 'wpchinese-switcher'); ?>
+                        <!--wpcs_NC_END-->"两个词的文章也会被返回。</br><hr>
+                 提示：此功能将增加搜索时数据库负担，低配服务器建议关闭。', 'wpchinese-switcher'); ?>
                                     </span>
                                 </span>
                             </td>
@@ -356,7 +387,7 @@ class wpcs_Admin {
                                         <?php echo __( '关闭', 'wpchinese-switcher' ); ?>
                                     </option>
                                     <option value="1"<?php echo $this->options['wpcs_search_conversion'] == 1 ? ' selected="selected"' : ''; ?>>
-                                        <?php echo __( '仅当中文语言不是"不转换"时开启(默认值)', 'wpchinese-switcher' ); ?>
+                                        <?php echo __( '仅语言非"不转换"时开启（默认）', 'wpchinese-switcher' ); ?>
                                     </option>
                                 </select>
                             </td>
@@ -367,20 +398,20 @@ class wpcs_Admin {
                                 <?php _e('识别浏览器中文语言动作', 'wpchinese-switcher'); ?>
                                 <span class="tooltip">
                                     <span class="tooltiptext">
-                                        <b><?php _e('本项设置不会应用于搜索引擎.', 'wpchinese-switcher'); ?></b> 
-                                        <?php _e('如果本选项设置不为"关闭", 进程将识别访客浏览器首选中文语言。', 'wpchinese-switcher'); ?>
-                                        <?php _e('如果设置为"跳转到对应繁简版本页面", 进程将302重定向到当前页面的访客浏览器首选语言版本。', 'wpchinese-switcher'); ?>
-                                        <?php _e('如果设置为"直接显示对应繁简版本内容",进程将直接显示对应中文转换版本内容而不进行重定向。', 'wpchinese-switcher'); ?>
-                                        <b><?php _e('如果本选项设置为"直接显示对应繁简版本内容", 必须把下一个选项"使用Cookie保存并识别用户语言偏好"关闭或也设置为直接显示对应繁简版本,否则本插件只会在浏览器第一次访问时直接显示, 其他情况跳转。', 'wpchinese-switcher'); ?></b>
+                                        <b><?php _e('注意：此项设置不会应用于搜索引擎。', 'wpchinese-switcher'); ?></b> <hr>
+                                        <?php _e('1、设置为非"关闭"，将自动识别访客浏览器首选中文语言。', 'wpchinese-switcher'); ?><br/>
+                                        <?php _e('2、设置"跳转至…"，将302重定向到访客浏览器首选语言版本。', 'wpchinese-switcher'); ?><br/>
+                                        <?php _e('3、设置"显示为…"，将直接显示中文转换版本而不重定向。', 'wpchinese-switcher'); ?><br/><hr>
+                                        <?php _e('提示：当您设置"显示为…"时， 必须把选项"Cookie识别用户语言偏好"关闭，或也设置为"显示为…"相同选项。否则插件只会在浏览器第一次访问时直接显示，其他情况依旧跳转。', 'wpchinese-switcher'); ?>
                                         <br/><br/>
-                                        <b><?php _e('关于"允许繁简语系内部通用"复选项说明:', 'wpchinese-switcher'); ?></b>
-                                        <?php _e('只有当"识别浏览器动作"选项不为"关闭"时该复选框才有效。具体说明，', 'wpchinese-switcher'); ?>
-                                        <?php _e('假如您在本页第一项设置里禁用了部分中文,如zh-hk, 那幺浏览器里语言设置里只有"<!--wpcs_NC_START--> 港澳繁体 <!--wpcs_NC_END--> "的用户访问时默认不会被识别;', 'wpchinese-switcher'); ?>
-                                        <?php _e('但如果选中了此复选框,只要您开启了"<!--wpcs_NC_START--> 繁体中文<!--wpcs_NC_END--> ", "
+                                        <b><?php _e('说明：关于"允许不同语系内通用"复选项', 'wpchinese-switcher'); ?></b>
+                                        <?php _e('此项仅在"识别浏览器动作"选项不为"关闭"时才有效。', 'wpchinese-switcher'); ?><br/><hr>
+                                        <?php _e('1、假如您在本页设置里禁用了部分中文，如<code>zh-hk</code>， 那么浏览器里只有"<!--wpcs_NC_START--> 港澳繁体 <!--wpcs_NC_END--> "的用户访问网站时默认不会被识别;', 'wpchinese-switcher'); ?><br/>
+                                        <?php _e('2、如果选中了此复选框，只要您开启了"<!--wpcs_NC_START--> 繁体中文<!--wpcs_NC_END--> ", "
                         <!--wpcs_NC_START--> 台湾正体
                         <!--wpcs_NC_END--> "
-                  或 "<!--wpcs_NC_START--> 港澳繁体<!--wpcs_NC_END--> " 中任一种语言, 浏览器使用这三种语言的用户都会被本插件识别并根据选项做出动作.', 'wpchinese-switcher'); ?>
-                                        <?php _e('(但此时页面被转换后的语言可能并不是用户浏览器设置的那种, 而是您开启的那种繁体语言)。简体语系同理。', 'wpchinese-switcher'); ?>
+                  或 "<!--wpcs_NC_START--> 港澳繁体<!--wpcs_NC_END--> " 中任一种语言， 浏览器使用这几种语言的用户都会被插件识别并根据选项做出动作。', 'wpchinese-switcher'); ?><br/>
+                                        <?php _e('3、此时页面被转换后的语言可能并不是用户浏览器设置的那种, 而是您开启的对应繁体语言。简体语系同理。', 'wpchinese-switcher'); ?>
                                     </span>
                                 </span>
                             </td>
@@ -388,87 +419,87 @@ class wpcs_Admin {
                                 <select id="wpcso_browser_redirect" value="" name="wpcso_browser_redirect"
                                         style="width: 250px;">
                                     <option value="2"<?php echo $this->options['wpcs_browser_redirect'] == 2 ? ' selected="selected"' : ''; ?>>
-                                        <?php _e('直接显示对应繁简版本内容', 'wpchinese-switcher'); ?>
+                                        <?php _e('显示为对应繁简版本', 'wpchinese-switcher'); ?>
                                     </option>
                                     <option value="1"<?php echo $this->options['wpcs_browser_redirect'] == 1 ? ' selected="selected"' : ''; ?>>
-                                        <?php _e('跳转到对应繁简版本页面', 'wpchinese-switcher'); ?>
+                                        <?php _e('跳转至对应繁简页面', 'wpchinese-switcher'); ?>
                                     </option>
                                     <option value="0"<?php echo $this->options['wpcs_browser_redirect'] == 0 ? ' selected="selected"' : ''; ?>>
-                                        <?php _e('关闭此功能(默认值)', 'wpchinese-switcher'); ?>
+                                        <?php _e('关闭（默认值）', 'wpchinese-switcher'); ?>
                                     </option>
                                 </select> <input type="checkbox" name="wpcso_auto_language_recong"
                                                  id="wpcso_auto_language_recong"
                                                  value=""<?php echo $this->options['wpcs_auto_language_recong'] == 1 ? ' checked="checked"' : ''; ?> /><label
-                                        for="wpcso_auto_language_recong"><?php _e('允许繁简语系内部通用', 'wpchinese-switcher'); ?>.</label>
+                                        for="wpcso_auto_language_recong"><?php _e('允许不同语系内通用', 'wpchinese-switcher'); ?>。</label>
                             </td>
                         </tr>
 
                         <tr>
                             <td valign="top" width="30%">
-                            <?php _e('使用Cookie保存并识别用户语言偏好', 'wpchinese-switcher'); ?>
+                            <?php _e('Cookie识别用户语言偏好', 'wpchinese-switcher'); ?>
                                 <span class="tooltip">
-                    <span class="tooltiptext"><?php _e('<b>本项设置不会应用于搜索引擎.</b> 如果开启这项设置,本插件将自动保存访客的语言选择.举例而言,
-                  当用户通过 "', 'wpchinese-switcher'); ?><?php echo $this->options['wpcs_use_permalink'] ?
+                    <span class="tooltiptext"><?php _e('注意：<b>本项设置不会应用于搜索引擎。</b> 如果开启这项设置，本插件将自动保存访客的语言选择。</br><hr>举例而言,
+                  当访客通过 "', 'wpchinese-switcher'); ?><?php echo $this->options['wpcs_use_permalink'] ?
 		                    esc_html( trailingslashit( wpcs_link_conversion( get_option( 'home' ) . '/', 'zh-tw' ) ) ) :
 		                    esc_html( wpcs_link_conversion( get_option( 'home' ) . '/', 'zh-tw' ) ); ?>"
-                            <?php _e('这个链接访问了您网站的台湾繁体版本时,进程将保存信息到Cookie中. 如果该用户重启浏览器并通过', 'wpchinese-switcher'); ?>
+                            <?php _e('链接访问了您网站的台湾繁体版本时，进程信息将保存到Cookie中。<br/><br/> 如果该访客重启浏览器并通过', 'wpchinese-switcher'); ?>
                    "<?php echo get_option( 'home' ); ?>/" 
                    <?php _e('再次访问您网站时,
-                  则会被自动跳转到台湾繁体版本的地址. 如果设置为"直接显示对应繁简版本",则不会进行跳转.
-                  (参见上一项的说明)<br/><br/><b>本选项和上一项"识别浏览器"选项与缓存插件不兼容</b>.如果您使用了WP Super Cache/ Hyper Cache之类Cache插件,
-                  请把这两项设置均设为"关闭",否则这两个功能不但不会正常工作, 而且可能造成缓存异常.</span>
+                  则会自动跳转至繁体地址。如果设置为"显示为对应繁简内容"，则无需跳转。
+                  (参见上一项说明)<br/><br/>如果您使用了WP Super Cache/ Hyper Cache之类缓存插件,
+                  请把这两项设置均设为"关闭"，否则这两功能不仅不会正常工作，还可能造成缓存异常。<b><hr>提示：本选项和上方"识别浏览器"选项均与缓存插件不兼容</b>。</span>
                 </span>', 'wpchinese-switcher'); ?>
                             </td>
                             <td>
                                 <select id="wpcso_use_cookie_variant" value="" name="wpcso_use_cookie_variant"
                                         style="width: 250px;">';
                                     <option value="2"<?php echo $this->options['wpcs_use_cookie_variant'] == 2 ? ' selected="selected"' : ''; ?>>
-                                        <?php _e('直接显示对应繁简版本内容', 'wpchinese-switcher'); ?>
+                                        <?php _e('显示为对应繁简版本', 'wpchinese-switcher'); ?>
                                     </option>
                                     <option value="1"<?php echo $this->options['wpcs_use_cookie_variant'] == 1 ? ' selected="selected"' : ''; ?>>
-                                    <?php _e('跳转到对应繁简版本页面', 'wpchinese-switcher'); ?>
+                                    <?php _e('跳转至对应繁简页面', 'wpchinese-switcher'); ?>
                                     </option>
                                     <option value="0"<?php echo $this->options['wpcs_use_cookie_variant'] == 0 ? ' selected="selected"' : ''; ?>>
-                                    <?php _e('关闭此功能(默认值)', 'wpchinese-switcher'); ?>
+                                    <?php _e('关闭（默认值）', 'wpchinese-switcher'); ?>
                                     </option>
                                 </select>
                                 <input type="checkbox" name="wpcso_auto_language_recong"
                                     id="wpcso_auto_language_recong"
                                     value=""<?php echo $this->options['wpcs_auto_language_recong'] == 1 ? ' checked="checked"' : ''; ?> />
-                                <label for="wpcso_auto_language_recong"><?php _e('允许繁简语系内部通用', 'wpchinese-switcher'); ?>.</label>
+                                <label for="wpcso_auto_language_recong"><?php _e('允许不同语系内通用', 'wpchinese-switcher'); ?>。</label>
                             </td>
                         </tr>
 
                         <tr>
                             <td valign="top" width="30%">
-                                <?php _e('不转换文章中某些HTML标签里中文', 'wpchinese-switcher'); ?>
+                                <?php _e('排除某些HTML标签内中文', 'wpchinese-switcher'); ?>
                                 <span class="tooltip">
                                     <span class="tooltiptext">
-                                        <?php _e('这里输入的HTML标签里内容将不进行中文繁简转换(仅适用文章内容), 保持原样输出。请输入HTML标签名,', 'wpchinese-switcher'); ?>
+                                        <?php _e('注意：这里输入的HTML标签里内容将不进行中文繁简转换（仅适用文章内容）， 保持原样输出。请输入HTML标签名：', 'wpchinese-switcher'); ?></br><hr>
                                         <?php _e('如', 'wpchinese-switcher'); ?> <code>pre</code>;
-                                        <?php _e('多个HTML标签之间以', 'wpchinese-switcher'); ?> <code>,</code> <?php _e('分割, 如', 'wpchinese-switcher'); ?> <code>pre,code</code>. 
-                                        <?php _e('支持部分基本的', 'wpchinese-switcher'); ?><a href="http://www.w3schools.com/cssref/css_selectors.asp" target="_blank"><?php _e('CSS选择器', 'wpchinese-switcher'); ?></a><?php _e('的DOM筛选语法，如', 'wpchinese-switcher'); ?><code>div.nocc</code>,
-                                        <code>.class1,div#para1</code>, <code>table,span.nocc,div[attr="hello"]</code>. 
-                                        <?php _e('如果遇到html错误, 请关闭此选项.', 'wpchinese-switcher'); ?>
+                                        <?php _e('多个HTML标签之间以', 'wpchinese-switcher'); ?> <code>,</code> <?php _e('分割，如', 'wpchinese-switcher'); ?> <code>pre,code</code>. 
+                                        <?php _e('支持部分基本的', 'wpchinese-switcher'); ?><?php _e('CSS选择器', 'wpchinese-switcher'); ?><?php _e('的DOM筛选语法，如', 'wpchinese-switcher'); ?><code>div.nocc</code>,
+                                        <code>.class1,div#para1</code>, <code>table,span.nocc,div[attr="hello"]</code>.</br>
+                                        <?php _e('如遇HTML错误，请关闭此选项。', 'wpchinese-switcher'); ?>
                                     </span>
                                 </span>
                             </td>
                             <td>
                                 <input type="text" value="<?php echo esc_attr($this->options['wpcs_no_conversion_tag']); ?>"
                                     style="width: 250px;"
-                                    name="wpcso_no_conversion_tag" id="wpcso_no_conversion_tag"/> (<?php _e('默认空', 'wpchinese-switcher'); ?>)
+                                    name="wpcso_no_conversion_tag" id="wpcso_no_conversion_tag"/> (<?php _e('默认为空', 'wpchinese-switcher'); ?>)
                             </td>
                         </tr>
 
                         <tr>
                             <td valign="top" width="30%">
-                                <?php _e('不转换日语(lang="ja")的HTML标签里内容', 'wpchinese-switcher'); ?>
+                                <?php _e('排除日语<code>(lang="ja")</code>标签', 'wpchinese-switcher'); ?>
                                 <span class="tooltip">
                                     <span class="tooltiptext">
-                                        <?php _e('如果选中此选项, 文章内容中用 lang="ja" 标记为日本语的html tag将不进行繁简转换, 保持原样输出。', 'wpchinese-switcher'); ?>
+                                        <?php _e('注意：如果选中此选项, 文章内容中用 lang="ja" 标记为日语的 HTML  标签将不进行繁简转换, 保持原样输出。</br><hr>', 'wpchinese-switcher'); ?>
                                         <?php _e('例如:', 'wpchinese-switcher'); ?> "<!--wpcs_NC_START--><code lang="ja">&lt;span lang="ja"&gt;あなたを、おつれしましょうか？ この町の願いが叶う場所に。&lt;/span&gt;</code><!--wpcs_NC_END-->"
                                         <?php _e('中的CJK汉字', 'wpchinese-switcher'); ?> <!--wpcs_NC_START--><code lang="ja">連</code><!--wpcs_NC_END--> <?php _e('和', 'wpchinese-switcher'); ?> <!--wpcs_NC_START--><code lang="ja">叶</code><!--wpcs_NC_END--> <?php _e('将不会进行繁简转换。', 'wpchinese-switcher'); ?>
-                                        <?php _e('如果遇到html错误, 请关闭此选项。', 'wpchinese-switcher'); ?>
+                                        <?php _e('如遇HTML错误，请关闭此选项。', 'wpchinese-switcher'); ?>
                                     </span>
                                 </span>
                             </td>
@@ -479,19 +510,19 @@ class wpcs_Admin {
                         </tr>
 
                         <tr>
-                            <td valign="top" width="30%"><?php _e('不转换HTML中任意内容TAG', 'wpchinese-switcher'); ?>
+                            <td valign="top" width="30%"><?php _e('排除HTML中任意内容TAG', 'wpchinese-switcher'); ?>
                                 <span class="tooltip">
-                                    <span class="tooltiptext"><?php _e('HTML中所有位于 <!--wpcs_NC_START--> 和 <!--wpcs_NC_END-->之间的内容将不会进行繁简转换,
-                                            保持原样输出.
-                                            您可以在模板或post内容中使用这个标签.<br/>您可以选择在WordPress的文章编辑器(html模式)工具栏中插入一个按钮(显示为"wpcs_NC"), 方便快速在文章中插入这个标签.', 'wpchinese-switcher'); ?></span>
+                                    <span class="tooltiptext"><?php _e('注意：您可以在页面模板或文章内容中使用以下标签。</br><hr>
+                                    1、如需原样输出内容，可使用 HTML 标签<code>&lt;!--wpcs_NC_START--&gt;</code>和<code>&lt;!--wpcs_NC_END--&gt;</code> 插入内容。
+                                            <br/>2、您可以在经典编辑器（HTML模式）工具栏中插入一个按钮(显示为"wpcs_NC"), 方便快速在文章中插入此标签。', 'wpchinese-switcher'); ?></span>
                                 </span>
                             </td>
                             <td>
-                                <!--wpcs_NC_START--><code>&lt;!--wpcs_NC_START--&gt;爱与正义, 剑与魔法, 光荣与梦想&lt;!--wpcs_NC_END--&gt;</code>
+                                <!--wpcs_NC_START--><code>&lt;!--wpcs_NC_START--&gt;文人墨客，文派墨图，文风笔笙&lt;!--wpcs_NC_END--&gt;</code>
                                 <!--wpcs_NC_END--><br/>
                                 <input type="checkbox" name="wpcso_no_conversion_qtag"
                                     id="wpcso_no_conversion_qtag" <?php checked( ! empty( $this->options['wpcs_no_conversion_qtag'] ) ); ?> />
-                                <label for="wpcso_no_conversion_qtag"><?php _e('在WordPress文章html编辑器中添加"不转换中文"的Quick tag', 'wpchinese-switcher'); ?></label>
+                                <label for="wpcso_no_conversion_qtag"><?php _e('为经典编辑器添加此"不转换中文"的按钮标签', 'wpchinese-switcher'); ?></label>
                             </td>
                         </tr>
 
@@ -500,11 +531,11 @@ class wpcs_Admin {
                                 <?php _e('繁简转换页面永久链接格式', 'wpchinese-switcher'); ?>
                                 <span class="tooltip">
                                     <span class="tooltiptext">
-                                        <?php _e('更改此项设置前,<b>请仔细阅读下面的说明:</b><br/>本项设置决定插件生成的繁简转换页面Permalink.
-                                        默认的形式为您原始Permalink后加上?variant=zh-tw参数.(zh-tw为当前请求的语言代码) .您可以修改这个permalink形式.本插件提供两种非默认的Permalink格式:
-                                        您原始的Permalink后加上/zh-tw 或/zh-tw/; 或/zh-tw后加上您原来Permalink. 两种区别在于中文语言代码(zh-tw)附加在您原来Permalink的末尾或开头.
-                                        URL末尾是否有 / 取决于您的WordPress永久链接末尾是否有/. 但<b>首页的繁简转换版本URL末尾永远有 "/"</b>. 如果您的WordPress未开启永久链接,
-                                        本项设置只能选择第一种URL形式.', 'wpchinese-switcher'); ?>
+                                        <?php _e('注意：此选项影响插件生成的转换页面链接，请仔细阅读：</br><hr>
+1、默认形式：为原始固定链接后加上<code>?variant=zh-tw</code>参数，其中<code>"zh-tw"</code>为对应语言代码。</br>
+2、可选格式：原始固定链接后加上<code>/zh-tw</code>或<code>/zh-tw/</code>；或<code>/zh-tw</code>后加上原始固定链接。对于  SEO 很有用。</br>
+3、有无斜杠：URL末尾是否有<code>/</code>取决于您的网站固定链接末尾是否有<code>/</code>，首页的繁简转换版本URL末尾永远有<code>/</code>。</br><hr>
+提示：若未开启固定链接，则只能选第一种默认URL形式。', 'wpchinese-switcher'); ?>
                                     </span>
                                 </span>
                             </td>
@@ -524,11 +555,12 @@ class wpcs_Admin {
 
                         <tr>
                             <td valign="top" width="30%">
-                                <?php _e('对页面内容整体转换', 'wpchinese-switcher'); ?>
+                                <?php _e('启用对页面内容的整体转换', 'wpchinese-switcher'); ?>
                                 <span class="tooltip">
                                     <span class="tooltiptext">
-                                        <?php _e('开启此选项后,插件将对WordPress输出的全部页面内容进行中文整体转换(使用ob_start和ob_flush函数),
-                                        这将极大提高页面生成速度并减少资源使用.但也可能造成意想不到问题.如果遇到异常(包括中文转换错误, HTML页面错误或php错误等),请关闭此选项.', 'wpchinese-switcher'); ?>
+                                        <?php _e('注意：开启后，将极大提高页面生成速度并减少资源使用。</br><hr>
+                                        1、插件将对 WordPress 全部页面内容进行中文整体转换（使用 ob_start 和 ob_flush 函数），
+                                        </br>2、如果遇到异常（包括中文转换错误，HTML页面错误或PHP错误等），请关闭此选项。', 'wpchinese-switcher'); ?>
                                     </span>
                                 </span>
                             </td>
@@ -557,13 +589,12 @@ class wpcs_Admin {
 				echo ( $cache_status != 0 ) ? 'block' : 'none';
 				?>;">
                     <div style="padding-top: 30px; padding-bottom: 20px; ">
-                        <b><?php _e('WP Super Cache兼容', 'wpchinese-switcher'); ?>
+                        <?php _e('WP Super Cache兼容', 'wpchinese-switcher'); ?>
                             <span class="tooltip">
                                 <span class="tooltiptext">
-                                    <?php _e('默认情况下, 本插件的"识别浏览器中文语言动作"和"使用Cookie保存并识别用户语言偏好"这两个功能与缓存插件不兼容. 如果您使用的是', 'wpchinese-switcher'); ?><a href="http://wordpress.org/extend/plugins/wp-super-cache/"><?php _e('WP Super Cache', 'wpchinese-switcher'); ?></a><?php _e('的"Legacy page caching"缓存模式, 您可以点击下面的按钮安装WP Super Cache兼容. ', 'wpchinese-switcher'); ?><b><?php _e('注意: 如果您没有开启"识别浏览器中文语言动作"和"使用Cookie保存并识别用户语言偏好"这两个功能(默认均为关闭), 则无需安装此兼容', 'wpchinese-switcher'); ?></b>; <?php _e('安装本兼容将增加WP Super Cache的缓存磁盘空间占用; ', 'wpchinese-switcher'); ?><b><?php _e('仅支持WP Super Cache插件的"Legacy page caching"模式, 不支持"PHP Cache"和"mod_rewrite cache"模式. (WP Super Cache 插件安装后默认为"PHP Cache"模式, 您必须手动切换到"Legacy"模式.)', 'wpchinese-switcher'); ?></b>
+                                    <?php _e('注意：默认情况下， 本插件的"识别浏览器中文语言动作"和"Cookie识别用户语言偏好"这两个功能与缓存插件不兼容。如果您使用的是', 'wpchinese-switcher'); ?><?php _e('WP Super Cache', 'wpchinese-switcher'); ?><?php _e('的"Legacy page caching"缓存模式, 您可以点击下面的按钮安装WP Super Cache兼容. ', 'wpchinese-switcher'); ?><b><br/><br/><?php _e('1、 如果您没有开启"识别浏览器中文语言动作"和"Cookie识别用户语言偏好"这两个功能(默认均为关闭)，则无需安装此兼容', 'wpchinese-switcher'); ?></b>; <?php _e('安装本兼容将增加WP Super Cache的缓存磁盘空间占用; ', 'wpchinese-switcher'); ?><br/><br/><?php _e('2、仅支持WP Super Cache插件的"Legacy page caching"模式, 不支持"PHP Cache"和"mod_rewrite cache"模式。(安装后默认为"PHP Cache"模式, 您必须手动切换到"Legacy"模式。)', 'wpchinese-switcher'); ?>
                                 </span>
                             </span>
-                        </b>
                     </div>
                     <form id="wpcso_cache_form" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
                         <table class="form-table">
@@ -611,7 +642,6 @@ class wpcs_Admin {
                     </form>
                 </div>
 
-                <div style="padding-top: 30px;padding-bottom: 20px;"><b><?php _e('卸载本插件:', 'wpchinese-switcher'); ?></b></div>
                 <form id="wpcso_uninstall_form" method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
                     <table class="form-table">
                         <tbody>
@@ -619,7 +649,7 @@ class wpcs_Admin {
                             <td valign="top" width="30%"><?php _e('确定卸载本插件?', 'wpchinese-switcher'); ?>
                                 <span class="tooltip">
                                     <span class="tooltiptext">
-                                        <?php _e('这将清除数据库options表中本插件的设置项(键值为wpcs_options), 提交后还需要到wordpress插件管理菜单里禁用本插件.', 'wpchinese-switcher'); ?>
+                                        <?php _e('注意：这将清除数据库<code>wp_options</code>表中本插件的设置项（键值为 <code>wpcs_options</code>），提交后请到插件管理中禁用本插件。', 'wpchinese-switcher'); ?>
                                     </span>
                                 </span>
                             </td>
