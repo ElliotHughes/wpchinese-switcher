@@ -56,9 +56,12 @@ use Overtrue\PHPOpenCC\Strategy;
 add_action('wp_enqueue_scripts', 'wpcs_add_global_js');
 function wpcs_add_global_js () {
     global $wpcs_options;
-    wp_register_script( 'wpcs-block-script-ok', plugins_url( '/assets/js/wpcs-block-script-ok.js', __FILE__ ), array( 'wp-blocks', 'wp-element' ), '1.2.0' );
-    wp_enqueue_script( 'wpcs-block-script-ok');
+    wp_register_script('wpcs-variant', plugins_url('/assets/js/dist/wpcs-variant.umd.js', __FILE__), array(), time().'1');
+    wp_register_script( 'wpcs-block-script-ok', plugins_url( '/assets/js/wpcs-block-script-ok.js', __FILE__ ), array( 'wp-blocks', 'wp-element', 'wpcs-variant' ), '1.2.0' . time() );
+    wp_enqueue_script( ['wpcs-variant', 'wpcs-block-script-ok']);
     wp_localize_script('wpcs-block-script-ok', 'wpc_switcher_use_permalink', array('type' => $wpcs_options['wpcs_use_permalink']));
+
+   
 }
 
 $wpcs_options = get_option('wpcs_options');
@@ -1032,7 +1035,7 @@ function wpcs_output_navi($args = '', $isReturn = false) {
         $checkSelected = function ($selected_lang) use ($wpcs_target_lang) {
             return $selected_lang == $wpcs_target_lang ? "selected":"";
         };
-        $output .= sprintf('<select id="wpcs_translate_type" value="%s" onchange="wpcsRedirectToPage()">', $wpcs_translate_type);
+        $output .= sprintf('<select id="wpcs_translate_type" value="%s" onchange="wpcsRedirectToPage(this)">', $wpcs_translate_type);
         $output .= sprintf('<option id="wpcs_original_link" value="" %s>%s</option>', $checkSelected(''),esc_html($noconverttip));
         foreach ($wpcs_langs_urls as $key => $value) {
             $tip    = ! empty($wpcs_options[$wpcs_langs[$key][1]]) ? esc_html($wpcs_options[$wpcs_langs[$key][1]]) : $wpcs_langs[$key][2];
