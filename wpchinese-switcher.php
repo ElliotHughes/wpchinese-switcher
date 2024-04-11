@@ -44,8 +44,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 //define('wpcs_DEBUG', true); $wpcs_deubg_data = array(); //uncomment this line to enable debug
-define('wpcs_DIR_URL', WP_PLUGIN_URL . '/' . str_replace(basename(__FILE__), "", plugin_basename(__FILE__)));
-define('wpcs_VERSION', '1.0');
+define( 'wpcs_DIR_URL', WP_PLUGIN_URL . '/' . str_replace( basename( __FILE__ ), "", plugin_basename( __FILE__ ) ) );
+define( 'wpcs_VERSION', '1.0' );
 
 // 载入github库 https://github.com/overtrue/php-opencc
 require __DIR__ . '/vendor/autoload.php';
@@ -53,18 +53,22 @@ require __DIR__ . '/vendor/autoload.php';
 use Overtrue\PHPOpenCC\OpenCC;
 use Overtrue\PHPOpenCC\Strategy;
 
-add_action('wp_enqueue_scripts', 'wpcs_add_global_js');
-function wpcs_add_global_js () {
-    global $wpcs_options;
-    wp_register_script('wpcs-variant', plugins_url('/assets/js/dist/wpcs-variant.umd.js', __FILE__), array(), '1.1.0');
-    wp_register_script( 'wpcs-block-script-ok', plugins_url( '/assets/js/wpcs-block-script-ok.js', __FILE__ ), array( 'wp-blocks', 'wp-element', 'wpcs-variant' ), '1.3.0' );
-    wp_enqueue_script( ['wpcs-variant', 'wpcs-block-script-ok']);
-    wp_localize_script('wpcs-block-script-ok', 'wpc_switcher_use_permalink', array('type' => $wpcs_options['wpcs_use_permalink']));
+add_action( 'wp_enqueue_scripts', 'wpcs_add_global_js' );
+function wpcs_add_global_js() {
+	global $wpcs_options;
+	wp_register_script( 'wpcs-variant', plugins_url( '/assets/js/dist/wpcs-variant.umd.js', __FILE__ ), array(), '1.1.0' );
+	wp_register_script( 'wpcs-block-script-ok', plugins_url( '/assets/js/wpcs-block-script-ok.js', __FILE__ ), array(
+		'wp-blocks',
+		'wp-element',
+		'wpcs-variant'
+	), '1.3.1' );
+	wp_enqueue_script( [ 'wpcs-variant', 'wpcs-block-script-ok' ] );
+	wp_localize_script( 'wpcs-block-script-ok', 'wpc_switcher_use_permalink', array( 'type' => $wpcs_options['wpcs_use_permalink'] ) );
 
-   
+
 }
 
-$wpcs_options = get_option('wpcs_options');
+$wpcs_options = get_option( 'wpcs_options' );
 // /**********************
 //初始化所有全局变量.其实不初始化也没关系,主要是防止某些古董php版本register_globals打开可能造成意想不到问题.
 $wpcs_admin                  = false;
@@ -78,41 +82,41 @@ $wpcs_target_lang            = false;
 //您可以更改提示文本,如"简体中文","繁体中文".但是不要改动其它.
 //不要改键值的语言代码zh-xx, 本插件一些地方使用了硬编码的语言代码.
 $wpcs_langs = array(
-    'zh-cn' => array('zhconversion_cn', 'cntip', __('简体中文', 'wpchinese-switcher'), 'zh-CN'),
-    'zh-tw' => array('zhconversion_tw', 'twtip', __('繁体中文', 'wpchinese-switcher'), 'zh-TW'),
-    'zh-hk' => array('zhconversion_hk', 'hktip', __('香港繁体', 'wpchinese-switcher'), 'zh-HK'),
-    // 'zh-jp' => array('zhconversion_jp', 'jptip', '日本语', 'zh-JP'),
-    /*
+	'zh-cn' => array( 'zhconversion_cn', 'cntip', __( '简体中文', 'wpchinese-switcher' ), 'zh-CN' ),
+	'zh-tw' => array( 'zhconversion_tw', 'twtip', __( '台灣正體', 'wpchinese-switcher' ), 'zh-TW' ),
+	'zh-hk' => array( 'zhconversion_hk', 'hktip', __( '港澳繁體', 'wpchinese-switcher' ), 'zh-HK' ),
+	// 'zh-jp' => array('zhconversion_jp', 'jptip', '日本语', 'zh-JP'),
+	/*
 'zh-hans' => array('zhconversion_hans', 'hanstip', '简体中文','zh-Hans'),
 'zh-hant' => array('zhconversion_hant', 'hanttip', '繁体中文','zh-Hant'),
 'zh-hk' => array('zhconversion_hk', 'hktip', '港澳繁体','zh-HK'),
 'zh-mo' => array('zhconversion_hk', 'motip', '澳门繁体','zh-MO'),
 'zh-sg' => array('zhconversion_sg', 'sgtip', '马新简体','zh-SG'),
 'zh-my' => array('zhconversion_sg', 'mytip', '马来西亚简体','zh-MY'),
-    */
+	*/
 );
 
 //容错处理.
-if ($wpcs_options != false && is_array($wpcs_options) && is_array($wpcs_options['wpcs_used_langs'])) {
-    add_action('widgets_init', function () {
-        return register_widget('wpcs_Widget');
-    }, 1);
-    add_filter('query_vars', 'wpcs_insert_query_vars');//修改query_vars钩子,增加一个'variant'公共变量.
-    add_action('init', 'wpcs_init');//插件初始化
+if ( $wpcs_options != false && is_array( $wpcs_options ) && is_array( $wpcs_options['wpcs_used_langs'] ) ) {
+	add_action( 'widgets_init', function () {
+		return register_widget( 'wpcs_Widget' );
+	}, 1 );
+	add_filter( 'query_vars', 'wpcs_insert_query_vars' );//修改query_vars钩子,增加一个'variant'公共变量.
+	add_action( 'init', 'wpcs_init' );//插件初始化
 
-    if (
-        WP_DEBUG ||
-        (defined('wpcs_DEBUG') && wpcs_DEBUG == true)
-    ) {
-        add_action('init', function () {
-            global $wp_rewrite;
-            $wp_rewrite->flush_rules();
-        });
-        add_action('wp_footer', 'wpcs_debug');
-    }
+	if (
+		WP_DEBUG ||
+		( defined( 'wpcs_DEBUG' ) && wpcs_DEBUG == true )
+	) {
+		add_action( 'init', function () {
+			global $wp_rewrite;
+			$wp_rewrite->flush_rules();
+		} );
+		add_action( 'wp_footer', 'wpcs_debug' );
+	}
 }
 
-add_action('admin_menu', 'wpcs_admin_init');//插件后台菜单钩子
+add_action( 'admin_menu', 'wpcs_admin_init' );//插件后台菜单钩子
 
 
 /* 全局代码END; 下面的全是函数定义 */
@@ -127,46 +131,48 @@ add_action('admin_menu', 'wpcs_admin_init');//插件后台菜单钩子
  * B. 否则, 加载parse_request接口
  */
 function wpcs_init() {
-    global $wpcs_options, $wp_rewrite;
+	global $wpcs_options, $wp_rewrite;
 
-    if ($wpcs_options['wpcs_use_permalink'] != 0 && empty($wp_rewrite->permalink_structure)) {
-        $wpcs_options['wpcs_use_permalink'] = 0;
-        update_option('wpcs_options', $wpcs_options);
-    }
-    if ($wpcs_options['wpcs_use_permalink'] != 0) {
-        add_filter('rewrite_rules_array', 'wpcs_rewrite_rules');
-    }
+	if ( $wpcs_options['wpcs_use_permalink'] != 0 && empty( $wp_rewrite->permalink_structure ) ) {
+		$wpcs_options['wpcs_use_permalink'] = 0;
+		update_option( 'wpcs_options', $wpcs_options );
+	}
+	if ( $wpcs_options['wpcs_use_permalink'] != 0 ) {
+		add_filter( 'rewrite_rules_array', 'wpcs_rewrite_rules' );
+	}
 
-    if ((strpos($_SERVER['PHP_SELF'], 'wp-comments-post.php') !== false
-         || strpos($_SERVER['PHP_SELF'], 'ajax-comments.php') !== false
-         || strpos($_SERVER['PHP_SELF'], 'comments-ajax.php') !== false
-        ) &&
-        $_SERVER["REQUEST_METHOD"] == "POST" &&
-        ! empty($_POST['variant']) && in_array($_POST['variant'], $wpcs_options['wpcs_used_langs'])
-    ) {
-        global $wpcs_target_lang;
-        $wpcs_target_lang = $_POST['variant'];
-        wpcs_do_conversion();
+	if ( ( strpos( $_SERVER['PHP_SELF'], 'wp-comments-post.php' ) !== false
+	       || strpos( $_SERVER['PHP_SELF'], 'ajax-comments.php' ) !== false
+	       || strpos( $_SERVER['PHP_SELF'], 'comments-ajax.php' ) !== false
+	     ) &&
+	     $_SERVER["REQUEST_METHOD"] == "POST" &&
+	     ! empty( $_POST['variant'] ) && in_array( $_POST['variant'], $wpcs_options['wpcs_used_langs'] )
+	) {
+		global $wpcs_target_lang;
+		$wpcs_target_lang = $_POST['variant'];
+		wpcs_do_conversion();
 
-        return;
-    }
+		return;
+	}
 
-    if ('page' == get_option('show_on_front') && get_option('page_on_front')) {
-        add_action('parse_query', 'wpcs_parse_query_fix');
-    }
-    add_action('parse_request', 'wpcs_parse_query');
-    add_action('template_redirect', 'wpcs_template_redirect', - 100);//本插件核心代码.
-    add_action('enqueue_block_editor_assets', 'my_plugin_enqueue_block_editor_assets');
+	if ( 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) ) {
+		add_action( 'parse_query', 'wpcs_parse_query_fix' );
+	}
+	add_action( 'parse_request', 'wpcs_parse_query' );
+	add_action( 'template_redirect', 'wpcs_template_redirect', - 100 );//本插件核心代码.
+	add_action( 'enqueue_block_editor_assets', 'my_plugin_enqueue_block_editor_assets' );
 }
 
 /**
  * 短码
  */
-function wpchinese_switcher_shortcode() { 
-    set_wpcs_langs_urls();
-    return wpcs_output_navi('', true);
+function wpchinese_switcher_shortcode() {
+	set_wpcs_langs_urls();
+
+	return wpcs_output_navi( '', true );
 }
-add_shortcode('wpchinese-switcher', 'wpchinese_switcher_shortcode');
+
+add_shortcode( 'wpchinese-switcher', 'wpchinese_switcher_shortcode' );
 
 /**
  * 修复首页显示Page时繁简转换页仍然显示最新posts的问题
@@ -176,89 +182,89 @@ add_shortcode('wpchinese-switcher', 'wpchinese_switcher_shortcode');
  * @see wp-include/query.php
  *
  */
-function wpcs_parse_query_fix($this_WP_Query) {
+function wpcs_parse_query_fix( $this_WP_Query ) {
 
-    //copied and modified from wp-includes/query.php
-    $qv = &$this_WP_Query->query_vars;
+	//copied and modified from wp-includes/query.php
+	$qv = &$this_WP_Query->query_vars;
 
-    // Correct is_* for page_on_front and page_for_posts
-    if ($this_WP_Query->is_home && 'page' == get_option('show_on_front') && get_option('page_on_front')) {
-        $_query = wp_parse_args($this_WP_Query->query);
-        // pagename can be set and empty depending on matched rewrite rules. Ignore an empty pagename.
-        if (isset($_query['pagename']) && '' == $_query['pagename']) {
-            unset($_query['pagename']);
-        }
-        if (empty($_query) || ! array_diff(array_keys($_query), array(
-                'preview',
-                'page',
-                'paged',
-                'cpage',
-                'variant'
-            ))) {
-            $this_WP_Query->is_page = true;
-            $this_WP_Query->is_home = false;
-            $qv['page_id']          = get_option('page_on_front');
-            // Correct <!--nextpage--> for page_on_front
-            if ( ! empty($qv['paged'])) {
-                $qv['page'] = $qv['paged'];
-                unset($qv['paged']);
-            }
-        }
-    }
+	// Correct is_* for page_on_front and page_for_posts
+	if ( $this_WP_Query->is_home && 'page' == get_option( 'show_on_front' ) && get_option( 'page_on_front' ) ) {
+		$_query = wp_parse_args( $this_WP_Query->query );
+		// pagename can be set and empty depending on matched rewrite rules. Ignore an empty pagename.
+		if ( isset( $_query['pagename'] ) && '' == $_query['pagename'] ) {
+			unset( $_query['pagename'] );
+		}
+		if ( empty( $_query ) || ! array_diff( array_keys( $_query ), array(
+				'preview',
+				'page',
+				'paged',
+				'cpage',
+				'variant'
+			) ) ) {
+			$this_WP_Query->is_page = true;
+			$this_WP_Query->is_home = false;
+			$qv['page_id']          = get_option( 'page_on_front' );
+			// Correct <!--nextpage--> for page_on_front
+			if ( ! empty( $qv['paged'] ) ) {
+				$qv['page'] = $qv['paged'];
+				unset( $qv['paged'] );
+			}
+		}
+	}
 
-    if ('' != $qv['pagename']) {
-        $this_WP_Query->queried_object = get_page_by_path($qv['pagename']);
-        if ( ! empty($this_WP_Query->queried_object)) {
-            $this_WP_Query->queried_object_id = (int) $this_WP_Query->queried_object->ID;
-        } else {
-            unset($this_WP_Query->queried_object);
-        }
+	if ( '' != $qv['pagename'] ) {
+		$this_WP_Query->queried_object = get_page_by_path( $qv['pagename'] );
+		if ( ! empty( $this_WP_Query->queried_object ) ) {
+			$this_WP_Query->queried_object_id = (int) $this_WP_Query->queried_object->ID;
+		} else {
+			unset( $this_WP_Query->queried_object );
+		}
 
-        if ('page' == get_option('show_on_front') && isset($this_WP_Query->queried_object_id) && $this_WP_Query->queried_object_id == get_option('page_for_posts')) {
-            $this_WP_Query->is_page       = false;
-            $this_WP_Query->is_home       = true;
-            $this_WP_Query->is_posts_page = true;
-        }
-    }
+		if ( 'page' == get_option( 'show_on_front' ) && isset( $this_WP_Query->queried_object_id ) && $this_WP_Query->queried_object_id == get_option( 'page_for_posts' ) ) {
+			$this_WP_Query->is_page       = false;
+			$this_WP_Query->is_home       = true;
+			$this_WP_Query->is_posts_page = true;
+		}
+	}
 
-    if ($qv['page_id']) {
-        if ('page' == get_option('show_on_front') && $qv['page_id'] == get_option('page_for_posts')) {
-            $this_WP_Query->is_page       = false;
-            $this_WP_Query->is_home       = true;
-            $this_WP_Query->is_posts_page = true;
-        }
-    }
+	if ( $qv['page_id'] ) {
+		if ( 'page' == get_option( 'show_on_front' ) && $qv['page_id'] == get_option( 'page_for_posts' ) ) {
+			$this_WP_Query->is_page       = false;
+			$this_WP_Query->is_home       = true;
+			$this_WP_Query->is_posts_page = true;
+		}
+	}
 
-    if ( ! empty($qv['post_type'])) {
-        if (is_array($qv['post_type'])) {
-            $qv['post_type'] = array_map('sanitize_key', $qv['post_type']);
-        } else {
-            $qv['post_type'] = sanitize_key($qv['post_type']);
-        }
-    }
+	if ( ! empty( $qv['post_type'] ) ) {
+		if ( is_array( $qv['post_type'] ) ) {
+			$qv['post_type'] = array_map( 'sanitize_key', $qv['post_type'] );
+		} else {
+			$qv['post_type'] = sanitize_key( $qv['post_type'] );
+		}
+	}
 
-    if ( ! empty($qv['post_status'])) {
-        if (is_array($qv['post_status'])) {
-            $qv['post_status'] = array_map('sanitize_key', $qv['post_status']);
-        } else {
-            $qv['post_status'] = preg_replace('|[^a-z0-9_,-]|', '', $qv['post_status']);
-        }
-    }
+	if ( ! empty( $qv['post_status'] ) ) {
+		if ( is_array( $qv['post_status'] ) ) {
+			$qv['post_status'] = array_map( 'sanitize_key', $qv['post_status'] );
+		} else {
+			$qv['post_status'] = preg_replace( '|[^a-z0-9_,-]|', '', $qv['post_status'] );
+		}
+	}
 
-    if ($this_WP_Query->is_posts_page && ( ! isset($qv['withcomments']) || ! $qv['withcomments'])) {
-        $this_WP_Query->is_comment_feed = false;
-    }
+	if ( $this_WP_Query->is_posts_page && ( ! isset( $qv['withcomments'] ) || ! $qv['withcomments'] ) ) {
+		$this_WP_Query->is_comment_feed = false;
+	}
 
-    $this_WP_Query->is_singular = $this_WP_Query->is_single || $this_WP_Query->is_page || $this_WP_Query->is_attachment;
-    // Done correcting is_* for page_on_front and page_for_posts
+	$this_WP_Query->is_singular = $this_WP_Query->is_single || $this_WP_Query->is_page || $this_WP_Query->is_attachment;
+	// Done correcting is_* for page_on_front and page_for_posts
 
-    /*
-        if ( '404' == $qv['error'] )
-            $this_WP_Query->set_404();
+	/*
+		if ( '404' == $qv['error'] )
+			$this_WP_Query->set_404();
 
-        $this_WP_Query->query_vars_hash = md5( serialize( $this_WP_Query->query_vars ) );
-        $this_WP_Query->query_vars_changed = false;
-        */
+		$this_WP_Query->query_vars_hash = md5( serialize( $this_WP_Query->query_vars ) );
+		$this_WP_Query->query_vars_changed = false;
+		*/
 
 }
 
@@ -291,31 +297,31 @@ function wpcs_edit_post() {
  *
  */
 function wpcs_header() {
-    global $wpcs_target_lang, $wpcs_langs_urls, $wpcs_noconversion_url, $wpcs_direct_conversion_flag;
-    echo "\n" . '<!-- WP Chinese Switcher Plugin Version ' . wpcs_VERSION . ' -->';
-    echo "<script type=\"text/javascript\">
+	global $wpcs_target_lang, $wpcs_langs_urls, $wpcs_noconversion_url, $wpcs_direct_conversion_flag;
+	echo "\n" . '<!-- WP Chinese Switcher Plugin Version ' . wpcs_VERSION . ' -->';
+	echo "<script type=\"text/javascript\">
 //<![CDATA[
 var wpcs_target_lang=\"$wpcs_target_lang\";var wpcs_noconversion_url=\"$wpcs_noconversion_url\";var wpcs_langs_urls=new Array();";
 
-    foreach ($wpcs_langs_urls as $key => $value) {
-        echo 'wpcs_langs_urls["' . $key . '"]="' . $value . '";';
-    }
-    echo '
+	foreach ( $wpcs_langs_urls as $key => $value ) {
+		echo 'wpcs_langs_urls["' . $key . '"]="' . $value . '";';
+	}
+	echo '
 //]]>
 </script>';
-    if ( ! $wpcs_direct_conversion_flag) {
-        wp_enqueue_script('wpcs-search-js', wpcs_DIR_URL . 'assets/js/search-variant.min.js', array(), '1.1', false);
-    }
-    //echo '<script type="text/javascript" src="' . wpcs_DIR_URL . 'assets/js/search-variant.min.js' . '"></script>';
+	if ( ! $wpcs_direct_conversion_flag ) {
+		wp_enqueue_script( 'wpcs-search-js', wpcs_DIR_URL . 'assets/js/search-variant.min.js', array(), '1.1', false );
+	}
+	//echo '<script type="text/javascript" src="' . wpcs_DIR_URL . 'assets/js/search-variant.min.js' . '"></script>';
 
-    if ($wpcs_direct_conversion_flag ||
-        ((class_exists('All_in_One_SEO_Pack') || class_exists('Platinum_SEO_Pack')) &&
-         ! is_single() && ! is_home() && ! is_page() && ! is_search())
-    ) {
-        return;
-    } else {
-        echo '<meta name="robots" content="noindex,follow" />';
-    }
+	if ( $wpcs_direct_conversion_flag ||
+	     ( ( class_exists( 'All_in_One_SEO_Pack' ) || class_exists( 'Platinum_SEO_Pack' ) ) &&
+	       ! is_single() && ! is_home() && ! is_page() && ! is_search() )
+	) {
+		return;
+	} else {
+		echo '<meta name="robots" content="noindex,follow" />';
+	}
 }
 
 /*
@@ -324,52 +330,51 @@ var wpcs_target_lang=\"$wpcs_target_lang\";var wpcs_noconversion_url=\"$wpcs_noc
  *
  */
 function wpcs_template_redirect() {
-    global $wpcs_noconversion_url, $wpcs_langs_urls, $wpcs_options, $wpcs_target_lang, $wpcs_redirect_to;
+	global $wpcs_noconversion_url, $wpcs_langs_urls, $wpcs_options, $wpcs_target_lang, $wpcs_redirect_to;
 
-    set_wpcs_langs_urls();
+	set_wpcs_langs_urls();
 
-    if ( ! is_404() && $wpcs_redirect_to) {
-        setcookie('wpcs_is_redirect_' . COOKIEHASH, '1', 0, COOKIEPATH, COOKIE_DOMAIN);
-        wp_redirect($wpcs_langs_urls[$wpcs_redirect_to], 302);
-    }
+	if ( ! is_404() && $wpcs_redirect_to ) {
+		setcookie( 'wpcs_is_redirect_' . COOKIEHASH, '1', 0, COOKIEPATH, COOKIE_DOMAIN );
+		wp_redirect( $wpcs_langs_urls[ $wpcs_redirect_to ], 302 );
+	}
 
-    if ( ! $wpcs_target_lang) {
-        return;
-    }
+	if ( ! $wpcs_target_lang ) {
+		return;
+	}
 
-    add_action('comment_form', 'wpcs_modify_comment_form');
-    function wpcs_modify_comment_form() {
-        global $wpcs_target_lang;
-        echo '<input type="hidden" name="variant" value="' . $wpcs_target_lang . '" />';
-    }
+	add_action( 'comment_form', 'wpcs_modify_comment_form' );
+	function wpcs_modify_comment_form() {
+		global $wpcs_target_lang;
+		echo '<input type="hidden" name="variant" value="' . $wpcs_target_lang . '" />';
+	}
 
-    wpcs_do_conversion();
+	wpcs_do_conversion();
 }
 
-function set_wpcs_langs_urls()
-{
-    global $wpcs_langs_urls, $wpcs_options, $wpcs_noconversion_url;
-    if (!$wpcs_langs_urls) {
-        if ($wpcs_noconversion_url == get_option('home') . '/' && $wpcs_options['wpcs_use_permalink']) {
-            foreach ($wpcs_options['wpcs_used_langs'] as $value) {
-                $wpcs_langs_urls[$value] = $wpcs_noconversion_url . $value . '/';
-            }
-        } else {
-            foreach ($wpcs_options['wpcs_used_langs'] as $value) {
-                $wpcs_langs_urls[$value] = wpcs_link_conversion($wpcs_noconversion_url, $value);
-            }
-        }
-    }
+function set_wpcs_langs_urls() {
+	global $wpcs_langs_urls, $wpcs_options, $wpcs_noconversion_url;
+	if ( ! $wpcs_langs_urls ) {
+		if ( $wpcs_noconversion_url == get_option( 'home' ) . '/' && $wpcs_options['wpcs_use_permalink'] ) {
+			foreach ( $wpcs_options['wpcs_used_langs'] as $value ) {
+				$wpcs_langs_urls[ $value ] = $wpcs_noconversion_url . $value . '/';
+			}
+		} else {
+			foreach ( $wpcs_options['wpcs_used_langs'] as $value ) {
+				$wpcs_langs_urls[ $value ] = wpcs_link_conversion( $wpcs_noconversion_url, $value );
+			}
+		}
+	}
 }
 
 /**
  * 在Wordpress的query vars里增加一个variant变量.
  *
  */
-function wpcs_insert_query_vars($vars) {
-    array_push($vars, 'variant');
+function wpcs_insert_query_vars( $vars ) {
+	array_push( $vars, 'variant' );
 
-    return $vars;
+	return $vars;
 }
 
 /**
@@ -378,45 +383,46 @@ function wpcs_insert_query_vars($vars) {
  *
  */
 class wpcs_Widget extends WP_Widget {
-    function __construct() {
-        parent::__construct('widget_wpcs', 'Chinese Switcher', array(
-            'classname'   => 'widget_wpcs',
-            'description' => 'Chinese Switcher Widget'
-        ));
-    }
+	function __construct() {
+		parent::__construct( 'widget_wpcs', 'Chinese Switcher', array(
+			'classname'   => 'widget_wpcs',
+			'description' => 'Chinese Switcher Widget'
+		) );
+	}
 
-    function widget($args, $instance) {
-        extract($args);
-        $title = apply_filters('widget_title', $instance['title']);
-        echo $before_widget;
-        if ($title) {
-            echo $before_title . $title . $after_title;
-        }
-        wpcs_output_navi(isset($instance['args']) ? $instance['args'] : '');
-        echo $after_widget;
-    }
+	function widget( $args, $instance ) {
+		extract( $args );
+		$title = apply_filters( 'widget_title', $instance['title'] );
+		echo $before_widget;
+		if ( $title ) {
+			echo $before_title . $title . $after_title;
+		}
+		wpcs_output_navi( isset( $instance['args'] ) ? $instance['args'] : '' );
+		echo $after_widget;
+	}
 
-    function update($new_instance, $old_instance) {
-        return $new_instance;
-    }
+	function update( $new_instance, $old_instance ) {
+		return $new_instance;
+	}
 
-    function form($instance) {
-        $title = isset($instance['title']) ? esc_attr($instance['title']) : '';
-        $args  = isset($instance['args']) ? esc_attr($instance['args']) : '';
-        ?>
-      <p>
-        <label for="<?php echo $this->get_field_id('title'); ?>">Title: <input class="widefat"
-                                                                               id="<?php echo $this->get_field_id('title'); ?>"
-                                                                               name="<?php echo $this->get_field_name('title'); ?>"
-                                                                               type="text"
-                                                                               value="<?php echo $title; ?>"/></label>
-        <label for="<?php echo $this->get_field_id('args'); ?>">Args: <input class="widefat"
-                                                                             id="<?php echo $this->get_field_id('args'); ?>"
-                                                                             name="<?php echo $this->get_field_name('args'); ?>"
-                                                                             type="text" value="<?php echo $args; ?>"/></label>
-      </p>
-        <?php
-    }
+	function form( $instance ) {
+		$title = isset( $instance['title'] ) ? esc_attr( $instance['title'] ) : '';
+		$args  = isset( $instance['args'] ) ? esc_attr( $instance['args'] ) : '';
+		?>
+        <p>
+            <label for="<?php echo $this->get_field_id( 'title' ); ?>">Title: <input class="widefat"
+                                                                                     id="<?php echo $this->get_field_id( 'title' ); ?>"
+                                                                                     name="<?php echo $this->get_field_name( 'title' ); ?>"
+                                                                                     type="text"
+                                                                                     value="<?php echo $title; ?>"/></label>
+            <label for="<?php echo $this->get_field_id( 'args' ); ?>">Args: <input class="widefat"
+                                                                                   id="<?php echo $this->get_field_id( 'args' ); ?>"
+                                                                                   name="<?php echo $this->get_field_name( 'args' ); ?>"
+                                                                                   type="text"
+                                                                                   value="<?php echo $args; ?>"/></label>
+        </p>
+		<?php
+	}
 }
 
 /**
@@ -432,31 +438,31 @@ class wpcs_Widget extends WP_Widget {
  * 本函数调用其把字符串转换为"台湾正体"版本
  *
  */
-function zhconversion($str, $variant = null) {
-    global $wpcs_options, $wpcs_langs;
-    if ($variant === null) {
-        $variant = $GLOBALS['wpcs_target_lang'];
-    }
-    if ($variant == false) {
-        return $str;
-    }
+function zhconversion( $str, $variant = null ) {
+	global $wpcs_options, $wpcs_langs;
+	if ( $variant === null ) {
+		$variant = $GLOBALS['wpcs_target_lang'];
+	}
+	if ( $variant == false ) {
+		return $str;
+	}
 
-    //if( !empty($wpcs_options['wpcs_no_conversion_tag']) || $wpcs_options['wpcs_no_conversion_ja'] == 1 )
-    //	return limit_zhconversion($str, $wpcs_langs[$variant][0]);
-    return $wpcs_langs[$variant][0]($str);
+	//if( !empty($wpcs_options['wpcs_no_conversion_tag']) || $wpcs_options['wpcs_no_conversion_ja'] == 1 )
+	//	return limit_zhconversion($str, $wpcs_langs[$variant][0]);
+	return $wpcs_langs[ $variant ][0]( $str );
 }
 
 
-function zhconversion2($str, $variant = null) { // do not convert content within <!--wpcs_NC_START--> and <!--wpcs_NC_END-->.
-    global $wpcs_options, $wpcs_langs;
-    if ($variant === null) {
-        $variant = $GLOBALS['wpcs_target_lang'];
-    }
-    if ($variant == false) {
-        return $str;
-    }
+function zhconversion2( $str, $variant = null ) { // do not convert content within <!--wpcs_NC_START--> and <!--wpcs_NC_END-->.
+	global $wpcs_options, $wpcs_langs;
+	if ( $variant === null ) {
+		$variant = $GLOBALS['wpcs_target_lang'];
+	}
+	if ( $variant == false ) {
+		return $str;
+	}
 
-    return limit_zhconversion($str, $wpcs_langs[$variant][0]);
+	return limit_zhconversion( $str, $wpcs_langs[ $variant ][0] );
 }
 
 
@@ -465,9 +471,9 @@ $_wpcs_id = 1000;
  * get a unique id number
  */
 function wpcs_id() {
-    global $_wpcs_id;
+	global $_wpcs_id;
 
-    return $_wpcs_id ++;
+	return $_wpcs_id ++;
 }
 
 /**
@@ -475,38 +481,38 @@ function wpcs_id() {
  * @since 1.1.14
  *
  */
-function wpcs_no_conversion_filter($str) {
-    global $wpcs_options;
+function wpcs_no_conversion_filter( $str ) {
+	global $wpcs_options;
 
-    $html  = str_get_html($str);
-    $query = '';
+	$html  = str_get_html( $str );
+	$query = '';
 
-    if ( ! empty($wpcs_options['wpcs_no_conversion_ja'])) {
-        $query .= '*[lang="ja"]';
-    }
+	if ( ! empty( $wpcs_options['wpcs_no_conversion_ja'] ) ) {
+		$query .= '*[lang="ja"]';
+	}
 
-    if ( ! empty($wpcs_options['wpcs_no_conversion_tag'])) {
-        if ($query != '') {
-            $query .= ',';
-        }
-        if (preg_match('/^[a-z1-9|]+$/', $wpcs_options['wpcs_no_conversion_tag'])) {
-            $query .= str_replace('|', ',', $wpcs_options['wpcs_no_conversion_tag']);
-        } // backward compatability
-        else {
-            $query .= $wpcs_options['wpcs_no_conversion_tag'];
-        }
-    }
+	if ( ! empty( $wpcs_options['wpcs_no_conversion_tag'] ) ) {
+		if ( $query != '' ) {
+			$query .= ',';
+		}
+		if ( preg_match( '/^[a-z1-9|]+$/', $wpcs_options['wpcs_no_conversion_tag'] ) ) {
+			$query .= str_replace( '|', ',', $wpcs_options['wpcs_no_conversion_tag'] );
+		} // backward compatability
+		else {
+			$query .= $wpcs_options['wpcs_no_conversion_tag'];
+		}
+	}
 
-    $elements = $html->find($query);
-    if (count($elements) == 0) {
-        return $str;
-    }
-    foreach ($elements as $element) {
-        $id                 = wpcs_id();
-        $element->innertext = '<!--wpcs_NC' . $id . '_START-->' . $element->innertext . '<!--wpcs_NC' . $id . '_END-->';
-    }
+	$elements = $html->find( $query );
+	if ( count( $elements ) == 0 ) {
+		return $str;
+	}
+	foreach ( $elements as $element ) {
+		$id                 = wpcs_id();
+		$element->innertext = '<!--wpcs_NC' . $id . '_START-->' . $element->innertext . '<!--wpcs_NC' . $id . '_END-->';
+	}
 
-    return (string) $html;
+	return (string) $html;
 
 }
 
@@ -522,10 +528,10 @@ function wpcs_no_conversion_filter($str) {
  * 与zhconversion函数不同的是本函数首先确保载入繁简转换表, 因为多了一次判断, 不可避免多耗费资源.
  *
  */
-function zhconversion_safe($str, $variant = null) {
-    wpcs_load_conversion_table();
+function zhconversion_safe( $str, $variant = null ) {
+	wpcs_load_conversion_table();
 
-    return zhconversion($str, $variant);
+	return zhconversion( $str, $variant );
 }
 
 /**
@@ -540,27 +546,27 @@ function zhconversion_safe($str, $variant = null) {
  * Return: array('网络', '网络');
  *
  */
-function zhconversion_all($str, $langs = array('zh-tw', 'zh-cn', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant')) {
-    global $wpcs_langs;
-    $return = array();
-    foreach ($langs as $value) {
-        $tmp = $wpcs_langs[$value][0] ($str);
-        if ($tmp != $str) {
-            $return[] = $tmp;
-        }
-    }
+function zhconversion_all( $str, $langs = array( 'zh-tw', 'zh-cn', 'zh-hk', 'zh-sg', 'zh-hans', 'zh-hant' ) ) {
+	global $wpcs_langs;
+	$return = array();
+	foreach ( $langs as $value ) {
+		$tmp = $wpcs_langs[ $value ][0] ( $str );
+		if ( $tmp != $str ) {
+			$return[] = $tmp;
+		}
+	}
 
-    return array_unique($return);
+	return array_unique( $return );
 }
 
 /**
  * 递归的对数组中元素用zhconversion函数转换, 返回处理后数组.
  *
  */
-function zhconversion_deep($value) {
-    $value = is_array($value) ? array_map('zhconversion_deep', $value) : zhconversion($value);
+function zhconversion_deep( $value ) {
+	$value = is_array( $value ) ? array_map( 'zhconversion_deep', $value ) : zhconversion( $value );
 
-    return $value;
+	return $value;
 }
 
 /**
@@ -572,23 +578,23 @@ function zhconversion_deep($value) {
  * @return converted string
  *
  */
-function limit_zhconversion($str, $function) {
-    if ($m = preg_split('/(<!--wpcs_NC(\d*)_START-->)(.*?)(<!--wpcs_NC\2_END-->)/s', $str, - 1, PREG_SPLIT_DELIM_CAPTURE)) {
-        $r     = '';
-        $count = 0;
-        foreach ($m as $v) {
-            $count ++;
-            if ($count % 5 == 1) {
-                $r .= $function ($v);
-            } else if ($count % 5 == 4) {
-                $r .= $v;
-            }
-        }
+function limit_zhconversion( $str, $function ) {
+	if ( $m = preg_split( '/(<!--wpcs_NC(\d*)_START-->)(.*?)(<!--wpcs_NC\2_END-->)/s', $str, - 1, PREG_SPLIT_DELIM_CAPTURE ) ) {
+		$r     = '';
+		$count = 0;
+		foreach ( $m as $v ) {
+			$count ++;
+			if ( $count % 5 == 1 ) {
+				$r .= $function ( $v );
+			} else if ( $count % 5 == 4 ) {
+				$r .= $v;
+			}
+		}
 
-        return $r;
-    } else {
-        return $function($str);
-    }
+		return $r;
+	} else {
+		return $function( $str );
+	}
 }
 
 
@@ -604,43 +610,43 @@ function limit_zhconversion($str, $function) {
  * 注意: 如果您想在其他地方(如Theme)里使用下面中文转换函数, 请保证首先调用一次wpcs_load_conversion_table(); , 因为出于节省内存需求, 本插件仅在繁简转换页面才会加载中文转换表.
  *
  */
-function zhconversion_hant($str) {
-    global $zh2Hant;
+function zhconversion_hant( $str ) {
+	global $zh2Hant;
 
-    return strtr($str, $zh2Hant);
+	return strtr( $str, $zh2Hant );
 }
 
-function zhconversion_hans($str) {
-    global $zh2Hans;
+function zhconversion_hans( $str ) {
+	global $zh2Hans;
 
-    return strtr($str, $zh2Hans);
+	return strtr( $str, $zh2Hans );
 }
 
-function zhconversion_cn($str) {
-    global $zh2Hans, $zh2CN;
+function zhconversion_cn( $str ) {
+	global $zh2Hans, $zh2CN;
 
-    return strtr(strtr($str, $zh2CN), $zh2Hans);
+	return strtr( strtr( $str, $zh2CN ), $zh2Hans );
 }
 
-function zhconversion_tw($str) {
-    return OpenCC::convert($str, strategy::SIMPLIFIED_TO_TAIWAN_WITH_PHRASE);
-    // global $zh2Hant;
+function zhconversion_tw( $str ) {
+	return OpenCC::convert( $str, strategy::SIMPLIFIED_TO_TAIWAN_WITH_PHRASE );
+	// global $zh2Hant;
 
-    // return strtr(OpenCC::convert($str, strategy::S2TW), $zh2Hant);
+	// return strtr(OpenCC::convert($str, strategy::S2TW), $zh2Hant);
 }
 
-function zhconversion_jp($str) {
-    return OpenCC::convert($str, strategy::S2JP);
+function zhconversion_jp( $str ) {
+	return OpenCC::convert( $str, strategy::S2JP );
 
-    // global $zh2Hans;
-    // return strtr(OpenCC::convert($str, strategy::S2JP), $zh2Hans);
+	// global $zh2Hans;
+	// return strtr(OpenCC::convert($str, strategy::S2JP), $zh2Hans);
 }
 
-function zhconversion_hk($str) {
-    return OpenCC::convert($str, strategy::S2HK);
-    // global $zh2Hant;
+function zhconversion_hk( $str ) {
+	return OpenCC::convert( $str, strategy::S2HK );
+	// global $zh2Hant;
 
-    // return strtr(OpenCC::convert($str, strategy::S2HK), $zh2Hant);
+	// return strtr(OpenCC::convert($str, strategy::S2HK), $zh2Hant);
 }
 
 /**
@@ -655,8 +661,8 @@ function zhconversion_hk($str) {
  *
  * @deprecated Use wpcs_link_conversion($link)
  */
-function wpcs_link_safe_conversion($link) {
-    return wpcs_link_conversion($link);
+function wpcs_link_safe_conversion( $link ) {
+	return wpcs_link_conversion( $link );
 }
 
 /**
@@ -671,19 +677,19 @@ function wpcs_link_safe_conversion($link) {
  * 本函数检测并取消这种重定向(通过返回false)
  *
  */
-function wpcs_cancel_incorrect_redirect($redirect_to, $redirect_from) {
-    global $wp_rewrite;
-    if (preg_match('/^.*\/(zh-tw|zh-cn|zh-sg|zh-hant|zh-hans|zh-my|zh-mo|zh-hk|zh|zh-reset)\/?.+$/', $redirect_to)) {
-        if (($wp_rewrite->use_trailing_slashes && substr($redirect_from, - 1) != '/') ||
-            ( ! $wp_rewrite->use_trailing_slashes && substr($redirect_from, - 1) == '/')
-        ) {
-            return user_trailingslashit($redirect_from);
-        }
+function wpcs_cancel_incorrect_redirect( $redirect_to, $redirect_from ) {
+	global $wp_rewrite;
+	if ( preg_match( '/^.*\/(zh-tw|zh-cn|zh-sg|zh-hant|zh-hans|zh-my|zh-mo|zh-hk|zh|zh-reset)\/?.+$/', $redirect_to ) ) {
+		if ( ( $wp_rewrite->use_trailing_slashes && substr( $redirect_from, - 1 ) != '/' ) ||
+		     ( ! $wp_rewrite->use_trailing_slashes && substr( $redirect_from, - 1 ) == '/' )
+		) {
+			return user_trailingslashit( $redirect_from );
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    return $redirect_to;
+	return $redirect_to;
 }
 
 /**
@@ -702,41 +708,41 @@ function wpcs_cancel_incorrect_redirect($redirect_to, $redirect_from) {
  * 1.1.6版本后, 因为增加了/zh-tw/original/permalink/这种URL形式, 情况更加复杂
  *
  */
-function wpcs_rewrite_rules($rules) {
-    global $wpcs_options;
-    $reg    = implode('|', $wpcs_options['wpcs_used_langs']);
-    $rules2 = array();
-    if ($wpcs_options['wpcs_use_permalink'] == 1) {
-        foreach ($rules as $key => $value) {
-            if (strpos($key, 'trackback') !== false || strpos($key, 'print') !== false || strpos($value, 'lang=') !== false) {
-                continue;
-            }
-            if (substr($key, - 3) == '/?$') {
-                if ( ! preg_match_all('/\$matches\[(\d+)\]/', $value, $matches, PREG_PATTERN_ORDER)) {
-                    continue;
-                }
-                $number                                                          = count($matches[0]) + 1;
-                $rules2[substr($key, 0, - 3) . '/(' . $reg . '|zh|zh-reset)/?$'] = $value . '&variant=$matches[' . $number . ']';
-            }
-        }
-    } else { // $wpcs_options['wpcs_use_permalink'] == 2
-        foreach ($rules as $key => $value) {
-            if (strpos($key, 'trackback') !== false || strpos($key, 'print') !== false || strpos($value, 'lang=') !== false) {
-                continue;
-            }
-            if (substr($key, - 3) == '/?$') {
-                $rules2['(' . $reg . '|zh|zh-reset)/' . $key] = preg_replace_callback('/\$matches\[(\d+)\]/', '_wpcs_permalink_preg_callback', $value) . '&variant=$matches[1]';
-            }
-        }
-    }
-    $rules2['^(' . $reg . '|zh|zh-reset)/?$'] = 'index.php?variant=$matches[1]';//首页的繁简转换版本rewrite规则
-    $return                                   = array_merge($rules2, $rules);
+function wpcs_rewrite_rules( $rules ) {
+	global $wpcs_options;
+	$reg    = implode( '|', $wpcs_options['wpcs_used_langs'] );
+	$rules2 = array();
+	if ( $wpcs_options['wpcs_use_permalink'] == 1 ) {
+		foreach ( $rules as $key => $value ) {
+			if ( strpos( $key, 'trackback' ) !== false || strpos( $key, 'print' ) !== false || strpos( $value, 'lang=' ) !== false ) {
+				continue;
+			}
+			if ( substr( $key, - 3 ) == '/?$' ) {
+				if ( ! preg_match_all( '/\$matches\[(\d+)\]/', $value, $matches, PREG_PATTERN_ORDER ) ) {
+					continue;
+				}
+				$number                                                              = count( $matches[0] ) + 1;
+				$rules2[ substr( $key, 0, - 3 ) . '/(' . $reg . '|zh|zh-reset)/?$' ] = $value . '&variant=$matches[' . $number . ']';
+			}
+		}
+	} else { // $wpcs_options['wpcs_use_permalink'] == 2
+		foreach ( $rules as $key => $value ) {
+			if ( strpos( $key, 'trackback' ) !== false || strpos( $key, 'print' ) !== false || strpos( $value, 'lang=' ) !== false ) {
+				continue;
+			}
+			if ( substr( $key, - 3 ) == '/?$' ) {
+				$rules2[ '(' . $reg . '|zh|zh-reset)/' . $key ] = preg_replace_callback( '/\$matches\[(\d+)\]/', '_wpcs_permalink_preg_callback', $value ) . '&variant=$matches[1]';
+			}
+		}
+	}
+	$rules2[ '^(' . $reg . '|zh|zh-reset)/?$' ] = 'index.php?variant=$matches[1]';//首页的繁简转换版本rewrite规则
+	$return                                     = array_merge( $rules2, $rules );
 
-    return $return;
+	return $return;
 }
 
-function _wpcs_permalink_preg_callback($matches) {
-    return '$matches[' . (intval($matches[1]) + 1) . ']';
+function _wpcs_permalink_preg_callback( $matches ) {
+	return '$matches[' . ( intval( $matches[1] ) + 1 ) . ']';
 }
 
 /**
@@ -750,53 +756,54 @@ function _wpcs_permalink_preg_callback($matches) {
  * 例如把分类页链接转换为 /category/cat-name/zh-xx/, 把Tag页链接转换为 /tag/tag-name/zh-xx/
  *
  */
-function wpcs_link_conversion($link, $variant = null) {
-    global $wpcs_options;
+function wpcs_link_conversion( $link, $variant = null ) {
+	global $wpcs_options;
 
-    static $wpcs_wp_home;
-    if (empty($wpcs_wp_home)) {
-        $wpcs_wp_home = home_url();
-    }
+	static $wpcs_wp_home;
+	if ( empty( $wpcs_wp_home ) ) {
+		$wpcs_wp_home = home_url();
+	}
 
-    if ($variant === null) {
-        $variant = $GLOBALS['wpcs_target_lang'];
-    }
-    if ($variant == false) {
-        return $link;
-    }
+	if ( $variant === null ) {
+		$variant = $GLOBALS['wpcs_target_lang'];
+	}
+	if ( $variant == false ) {
+		return $link;
+	}
 
-    if (strpos($link, '?') !== false || ! $wpcs_options['wpcs_use_permalink']) {
-        return add_query_arg('variant', $variant, $link);
-    }
-    if ($wpcs_options['wpcs_use_permalink'] == 1) {
-        return user_trailingslashit(trailingslashit($link) . $variant);
-    }
-    $pattern = '#^(https?://[^/]+)#'; 
-    $replacement = '$1/' . $variant;
-    $new_url = preg_replace($pattern, $replacement, $link);
-    return $new_url;
-    // return preg_replace('#^(http(s?)://[^/]+' . $wpcs_wp_home . ')#', '\\1' . $variant . '/', $link);
+	if ( strpos( $link, '?' ) !== false || ! $wpcs_options['wpcs_use_permalink'] ) {
+		return add_query_arg( 'variant', $variant, $link );
+	}
+	if ( $wpcs_options['wpcs_use_permalink'] == 1 ) {
+		return user_trailingslashit( trailingslashit( $link ) . $variant );
+	}
+	$pattern     = '#^(https?://[^/]+)#';
+	$replacement = '$1/' . $variant;
+	$new_url     = preg_replace( $pattern, $replacement, $link );
+
+	return $new_url;
+	// return preg_replace('#^(http(s?)://[^/]+' . $wpcs_wp_home . ')#', '\\1' . $variant . '/', $link);
 }
 
 /**
  * don't convert a link in "direct_conversion" mode;
  * @since 1.1.14.2
  */
-function wpcs_link_conversion_auto($link, $variant = null) {
-    global $wpcs_target_lang, $wpcs_direct_conversion_flag, $wpcs_options;
+function wpcs_link_conversion_auto( $link, $variant = null ) {
+	global $wpcs_target_lang, $wpcs_direct_conversion_flag, $wpcs_options;
 
-    if ($link == home_url('')) {
-        $link .= '/';
-    }
-    if ( ! $wpcs_target_lang || $wpcs_direct_conversion_flag) {
-        return $link;
-    } else {
-        if ($link == home_url('/') && ! empty($wpcs_options['wpcs_use_permalink'])) {
-            return trailingslashit(wpcs_link_conversion($link));
-        }
+	if ( $link == home_url( '' ) ) {
+		$link .= '/';
+	}
+	if ( ! $wpcs_target_lang || $wpcs_direct_conversion_flag ) {
+		return $link;
+	} else {
+		if ( $link == home_url( '/' ) && ! empty( $wpcs_options['wpcs_use_permalink'] ) ) {
+			return trailingslashit( wpcs_link_conversion( $link ) );
+		}
 
-        return wpcs_link_conversion($link);
-    }
+		return wpcs_link_conversion( $link );
+	}
 }
 
 /**
@@ -809,23 +816,23 @@ function wpcs_link_conversion_auto($link, $variant = null) {
  *
  */
 function wpcs_get_noconversion_url() {
-    global $wpcs_options;
-    $reg = implode('|', $wpcs_options['wpcs_used_langs']);
-    $tmp = (is_ssl() ? 'https://' : 'http://') .
-           $_SERVER['HTTP_HOST'] .
-           $_SERVER['REQUEST_URI'];
-    $tmp = trim(strtolower(remove_query_arg('variant', $tmp)));
-    
-    if (preg_match('/^(.*)\/(' . $reg . '|zh|zh-reset)(\/.*)?$/', $tmp, $matches)) {
-        // 出现在url路径下面会有问题
-        // 优先使用参数再使用路径内的语言
-        $tmp = user_trailingslashit(trailingslashit($matches[1]) . ltrim($matches[3] ?? '', '/')); //为什幺这样写代码? 是有原因的- -(众人: 废话!)
-        if ($tmp == get_option('home')) {
-            $tmp .= '/';
-        }
-    }
+	global $wpcs_options;
+	$reg = implode( '|', $wpcs_options['wpcs_used_langs'] );
+	$tmp = ( is_ssl() ? 'https://' : 'http://' ) .
+	       $_SERVER['HTTP_HOST'] .
+	       $_SERVER['REQUEST_URI'];
+	$tmp = trim( strtolower( remove_query_arg( 'variant', $tmp ) ) );
 
-    return $tmp;
+	if ( preg_match( '/^(.*)\/(' . $reg . '|zh|zh-reset)(\/.*)?$/', $tmp, $matches ) ) {
+		// 出现在url路径下面会有问题
+		// 优先使用参数再使用路径内的语言
+		$tmp = user_trailingslashit( trailingslashit( $matches[1] ) . ltrim( $matches[3] ?? '', '/' ) ); //为什幺这样写代码? 是有原因的- -(众人: 废话!)
+		if ( $tmp == get_option( 'home' ) ) {
+			$tmp .= '/';
+		}
+	}
+
+	return $tmp;
 }
 
 /**
@@ -842,25 +849,25 @@ function wpcs_get_noconversion_url() {
  * 本函数算法极为愚蠢- -, 但是没有其它办法, 因为wordpress对于分页链接的生成策略非常死板且无法更多地通过filter控制
  *
  */
-function wpcs_pagenum_link_fix($link) {
-    global $wpcs_target_lang, $wpcs_options;
-    global $paged;
-    if ($wpcs_options['wpcs_use_permalink'] != 1) {
-        return $link;
-    }
+function wpcs_pagenum_link_fix( $link ) {
+	global $wpcs_target_lang, $wpcs_options;
+	global $paged;
+	if ( $wpcs_options['wpcs_use_permalink'] != 1 ) {
+		return $link;
+	}
 
-    if (preg_match('/^(.*)\/page\/\d+\/' . $wpcs_target_lang . '\/page\/(\d+)\/?$/', $link, $tmp) ||
-        preg_match('/^(.*)\/' . $wpcs_target_lang . '\/page\/(\d+)\/?$/', $link, $tmp)) {
-        return user_trailingslashit($tmp[1] . '/page/' . $tmp[2] . '/' . $wpcs_target_lang);
-    } else if (preg_match('/^(.*)\/page\/(\d+)\/' . $wpcs_target_lang . '\/?$/', $link, $tmp) && $tmp[2] == 2 && $paged == 2) {
-        if ($tmp[1] == get_option('home')) {
-            return $tmp[1] . '/' . $wpcs_target_lang . '/';
-        }
+	if ( preg_match( '/^(.*)\/page\/\d+\/' . $wpcs_target_lang . '\/page\/(\d+)\/?$/', $link, $tmp ) ||
+	     preg_match( '/^(.*)\/' . $wpcs_target_lang . '\/page\/(\d+)\/?$/', $link, $tmp ) ) {
+		return user_trailingslashit( $tmp[1] . '/page/' . $tmp[2] . '/' . $wpcs_target_lang );
+	} else if ( preg_match( '/^(.*)\/page\/(\d+)\/' . $wpcs_target_lang . '\/?$/', $link, $tmp ) && $tmp[2] == 2 && $paged == 2 ) {
+		if ( $tmp[1] == get_option( 'home' ) ) {
+			return $tmp[1] . '/' . $wpcs_target_lang . '/';
+		}
 
-        return user_trailingslashit($tmp[1] . '/' . $wpcs_target_lang);
-    }
+		return user_trailingslashit( $tmp[1] . '/' . $wpcs_target_lang );
+	}
 
-    return $link;
+	return $link;
 }
 
 /**
@@ -878,26 +885,26 @@ function wpcs_pagenum_link_fix($link) {
  * 本函数把这个链接修复为 /YYYY/mm/sample-post/feed/zh-tw/ 的正确形式.
  *
  */
-function wpcs_fix_link_conversion($link) {
-    global $wpcs_options;
-    if ($wpcs_options['wpcs_use_permalink'] == 1) {
-        if ($flag = strstr($link, '#')) {
-            $link = substr($link, 0, - strlen($flag));
-        }
-        if (preg_match('/^(.*\/)(zh-tw|zh-cn|zh-sg|zh-hant|zh-hans|zh-my|zh-mo|zh-hk|zh|zh-reset)\/(.+)$/', $link, $tmp)) {
-            return user_trailingslashit($tmp[1] . trailingslashit($tmp[3]) . $tmp[2]) . $flag;
-        }
+function wpcs_fix_link_conversion( $link ) {
+	global $wpcs_options;
+	if ( $wpcs_options['wpcs_use_permalink'] == 1 ) {
+		if ( $flag = strstr( $link, '#' ) ) {
+			$link = substr( $link, 0, - strlen( $flag ) );
+		}
+		if ( preg_match( '/^(.*\/)(zh-tw|zh-cn|zh-sg|zh-hant|zh-hans|zh-my|zh-mo|zh-hk|zh|zh-reset)\/(.+)$/', $link, $tmp ) ) {
+			return user_trailingslashit( $tmp[1] . trailingslashit( $tmp[3] ) . $tmp[2] ) . $flag;
+		}
 
-        return $link . $flag;
-    } else if ($wpcs_options['wpcs_use_permalink'] == 0) {
-        if (preg_match('/^(.*)\?variant=([-a-zA-Z]+)\/(.*)$/', $link, $tmp)) {
-            return add_query_arg('variant', $tmp[2], trailingslashit($tmp[1]) . $tmp[3]);
-        }
+		return $link . $flag;
+	} else if ( $wpcs_options['wpcs_use_permalink'] == 0 ) {
+		if ( preg_match( '/^(.*)\?variant=([-a-zA-Z]+)\/(.*)$/', $link, $tmp ) ) {
+			return add_query_arg( 'variant', $tmp[2], trailingslashit( $tmp[1] ) . $tmp[3] );
+		}
 
-        return $link;
-    } else {
-        return $link;
-    }
+		return $link;
+	} else {
+		return $link;
+	}
 }
 
 /**
@@ -912,36 +919,36 @@ function wpcs_fix_link_conversion($link) {
  * 本函数把它修改为 /YYYY/mm/sample-post/trackback/的正确形式(即去除URL中 zh-xx字段)
  *
  */
-function wpcs_cancel_link_conversion($link) {
-    global $wpcs_options;
-    if ($wpcs_options['wpcs_use_permalink']) {
-        if (preg_match('/^(.*\/)(zh-tw|zh-cn|zh-sg|zh-hant|zh-hans|zh-my|zh-mo|zh-hk|zh|zh-reset)\/(.+)$/', $link, $tmp)) {
-            return $tmp[1] . $tmp[3];
-        }
+function wpcs_cancel_link_conversion( $link ) {
+	global $wpcs_options;
+	if ( $wpcs_options['wpcs_use_permalink'] ) {
+		if ( preg_match( '/^(.*\/)(zh-tw|zh-cn|zh-sg|zh-hant|zh-hans|zh-my|zh-mo|zh-hk|zh|zh-reset)\/(.+)$/', $link, $tmp ) ) {
+			return $tmp[1] . $tmp[3];
+		}
 
-        return $link;
-    } else {
-        if (preg_match('/^(.*)\?variant=[-a-zA-Z]+\/(.*)$/', $link, $tmp)) {
-            return trailingslashit($tmp[1]) . $tmp[2];
-        }
+		return $link;
+	} else {
+		if ( preg_match( '/^(.*)\?variant=[-a-zA-Z]+\/(.*)$/', $link, $tmp ) ) {
+			return trailingslashit( $tmp[1] ) . $tmp[2];
+		}
 
-        return $link;
-    }
+		return $link;
+	}
 }
 
 /**
  * ...
  */
 function wpcs_rel_canonical() {
-    if ( ! is_singular()) {
-        return;
-    }
-    global $wp_the_query;
-    if ( ! $id = $wp_the_query->get_queried_object_id()) {
-        return;
-    }
-    $link = wpcs_cancel_link_conversion(get_permalink($id));
-    echo "<link rel='canonical' href='$link' />\n";
+	if ( ! is_singular() ) {
+		return;
+	}
+	global $wp_the_query;
+	if ( ! $id = $wp_the_query->get_queried_object_id() ) {
+		return;
+	}
+	$link = wpcs_cancel_link_conversion( get_permalink( $id ) );
+	echo "<link rel='canonical' href='$link' />\n";
 }
 
 
@@ -952,29 +959,29 @@ function wpcs_rel_canonical() {
  * @since 1.1.9
  * @link http://www.w3.org/International/articles/language-tags/ W3C关于language attribute文章.
  */
-function variant_attribute($default = "zh", $variant = false) {
-    global $wpcs_langs;
-    if ( ! $variant) {
-        $variant = $GLOBALS['wpcs_target_lang'];
-    }
-    if ( ! $variant) {
-        return $default;
-    }
+function variant_attribute( $default = "zh", $variant = false ) {
+	global $wpcs_langs;
+	if ( ! $variant ) {
+		$variant = $GLOBALS['wpcs_target_lang'];
+	}
+	if ( ! $variant ) {
+		return $default;
+	}
 
-    return $wpcs_langs[$variant][3];
+	return $wpcs_langs[ $variant ][3];
 }
 
 /**
  * 返回当前语言代码
  * @since 1.1.9
  */
-function variant($default = false) {
-    global $wpcs_target_lang;
-    if ( ! $wpcs_target_lang) {
-        return $default;
-    }
+function variant( $default = false ) {
+	global $wpcs_target_lang;
+	if ( ! $wpcs_target_lang ) {
+		return $default;
+	}
 
-    return $wpcs_target_lang;
+	return $wpcs_target_lang;
 }
 
 /**
@@ -985,72 +992,76 @@ function variant($default = false) {
  * 本插件Widget会调用这个函数.
  *
  */
-function wpcs_output_navi($args = '', $isReturn = false) {
-    global $wpcs_target_lang, $wpcs_noconversion_url, $wpcs_langs_urls, $wpcs_langs, $wpcs_options;
+function wpcs_output_navi( $args = '', $isReturn = false ) {
+	global $wpcs_target_lang, $wpcs_noconversion_url, $wpcs_langs_urls, $wpcs_langs, $wpcs_options;
 
-    extract(wp_parse_args($args, array('mode' => 'normal', 'echo' => 1)));
-    if ($mode == 'wrap') {
-        wpcs_output_navi2();
+	extract( wp_parse_args( $args, array( 'mode' => 'normal', 'echo' => 1 ) ) );
+	if ( $mode == 'wrap' ) {
+		wpcs_output_navi2();
 
-        return;
-    }
+		return;
+	}
 
-    if ( ! empty($wpcs_options['nctip'])) {
-        $noconverttip = $wpcs_options['nctip'];
-    } else {
-        $locale = str_replace('_', '-', strtolower(get_locale()));
-        if (in_array($locale, array('zh-hant', 'zh-tw', 'zh-hk', 'zh-mo'))) //zh-mo = 澳门繁体, 目前与zh-hk香港繁体转换表相同
-        {
-            $noconverttip = '不转换';
-        } else {
-            $noconverttip = '不转换';
-        }
-    }
-    if ($wpcs_target_lang) {
-        $noconverttip = zhconversion($noconverttip);
-    }
-    if (($wpcs_options['wpcs_browser_redirect'] == 2 || $wpcs_options['wpcs_use_cookie_variant'] == 2) &&
-        $wpcs_target_lang
-    ) {
-        $default_url = wpcs_link_conversion($wpcs_noconversion_url, 'zh');
-        if ($wpcs_options['wpcs_use_permalink'] != 0 && is_home() && ! is_paged()) {
-            $default_url = trailingslashit($default_url);
-        }
-    } else {
-        $default_url = $wpcs_noconversion_url;
-    }
+	if ( ! empty( $wpcs_options['nctip'] ) ) {
+		$noconverttip = $wpcs_options['nctip'];
+	} else {
+		$locale = str_replace( '_', '-', strtolower( get_locale() ) );
+		if ( in_array( $locale, array( 'zh-hant', 'zh-tw', 'zh-hk', 'zh-mo' ) ) ) //zh-mo = 澳门繁体, 目前与zh-hk香港繁体转换表相同
+		{
+			$noconverttip = '不转换';
+		} else {
+			$noconverttip = '不转换';
+		}
+	}
+	if ( $wpcs_target_lang ) {
+		$noconverttip = zhconversion( $noconverttip );
+	}
+	if ( ( $wpcs_options['wpcs_browser_redirect'] == 2 || $wpcs_options['wpcs_use_cookie_variant'] == 2 ) &&
+	     $wpcs_target_lang
+	) {
+		$default_url = wpcs_link_conversion( $wpcs_noconversion_url, 'zh' );
+		if ( $wpcs_options['wpcs_use_permalink'] != 0 && is_home() && ! is_paged() ) {
+			$default_url = trailingslashit( $default_url );
+		}
+	} else {
+		$default_url = $wpcs_noconversion_url;
+	}
 
-    $wpcs_translate_type = $wpcs_options['wpcs_translate_type'] ?? 0;
+	$wpcs_translate_type = $wpcs_options['wpcs_translate_type'] ?? 0;
 
-    $output = "\n" . '<div id="wpcs_widget_inner"><!--wpcs_NC_START-->' . "\n";
-    if ($wpcs_translate_type == 0) {
-        $output .= '	<span id="wpcs_original_link" class="' . ($wpcs_target_lang == false ? 'wpcs_current_lang' : 'wpcs_lang') . '" ><a class="wpcs_link" href="' . esc_url($default_url) . '" title="' . esc_html($noconverttip) . '" langvar="">' . esc_html($noconverttip) . '</a></span>' . "\n";
-    
-        foreach ($wpcs_langs_urls as $key => $value) {
-            $tip    = ! empty($wpcs_options[$wpcs_langs[$key][1]]) ? esc_html($wpcs_options[$wpcs_langs[$key][1]]) : $wpcs_langs[$key][2];
-            if ($wpcs_target_lang) $tip = zhconversion($tip);
-            $output .= '	<span id="wpcs_' . $key . '_link" class="' . ($wpcs_target_lang == $key ? 'wpcs_current_lang' : 'wpcs_lang') . '" ><a class="wpcs_link" rel="nofollow" href="' . esc_url($value) . '" title="' . esc_html($tip) . '" langvar="'.$key.'">' . esc_html($tip) . '</a></span>' . "\n";
-        }
-    } else if ($wpcs_translate_type == 1) {
-        $checkSelected = function ($selected_lang) use ($wpcs_target_lang) {
-            return $selected_lang == $wpcs_target_lang ? "selected":"";
-        };
-        $output .= sprintf('<select id="wpcs_translate_type" value="%s" onchange="wpcsRedirectToPage(this)">', $wpcs_translate_type);
-        $output .= sprintf('<option id="wpcs_original_link" value="" %s>%s</option>', $checkSelected(''),esc_html($noconverttip));
-        foreach ($wpcs_langs_urls as $key => $value) {
-            $tip    = ! empty($wpcs_options[$wpcs_langs[$key][1]]) ? esc_html($wpcs_options[$wpcs_langs[$key][1]]) : $wpcs_langs[$key][2];
-            if ($wpcs_target_lang) $tip = zhconversion($tip);
-            $output .= sprintf('<option id="wpcs_%s_link" class="%s" value="%s" %s>%s</option>', $key,($wpcs_target_lang == $key ? 'wpcs_current_lang' : 'wpcs_lang'), $key, $checkSelected($key),esc_html($tip));
-        }
-        
-        $output .= sprintf('</select>');
+	$output = "\n" . '<div id="wpcs_widget_inner"><!--wpcs_NC_START-->' . "\n";
+	if ( $wpcs_translate_type == 0 ) {
+		$output .= '	<span id="wpcs_original_link" class="' . ( $wpcs_target_lang == false ? 'wpcs_current_lang' : 'wpcs_lang' ) . '" ><a class="wpcs_link" href="' . esc_url( $default_url ) . '" title="' . esc_html( $noconverttip ) . '" langvar="">' . esc_html( $noconverttip ) . '</a></span>' . "\n";
 
-    }
-    $output .= '<!--wpcs_NC_END--></div>' . "\n";
-    if ( ! $echo || $isReturn) {
-        return $output;
-    }
-    echo $output;
+		foreach ( $wpcs_langs_urls as $key => $value ) {
+			$tip = ! empty( $wpcs_options[ $wpcs_langs[ $key ][1] ] ) ? esc_html( $wpcs_options[ $wpcs_langs[ $key ][1] ] ) : $wpcs_langs[ $key ][2];
+			if ( $wpcs_target_lang ) {
+				$tip = zhconversion( $tip );
+			}
+			$output .= '	<span id="wpcs_' . $key . '_link" class="' . ( $wpcs_target_lang == $key ? 'wpcs_current_lang' : 'wpcs_lang' ) . '" ><a class="wpcs_link" rel="nofollow" href="' . esc_url( $value ) . '" title="' . esc_html( $tip ) . '" langvar="' . $key . '">' . esc_html( $tip ) . '</a></span>' . "\n";
+		}
+	} else if ( $wpcs_translate_type == 1 ) {
+		$checkSelected = function ( $selected_lang ) use ( $wpcs_target_lang ) {
+			return $selected_lang == $wpcs_target_lang ? "selected" : "";
+		};
+		$output        .= sprintf( '<select id="wpcs_translate_type" value="%s" onchange="wpcsRedirectToPage(this)">', $wpcs_translate_type );
+		$output        .= sprintf( '<option id="wpcs_original_link" value="" %s>%s</option>', $checkSelected( '' ), esc_html( $noconverttip ) );
+		foreach ( $wpcs_langs_urls as $key => $value ) {
+			$tip = ! empty( $wpcs_options[ $wpcs_langs[ $key ][1] ] ) ? esc_html( $wpcs_options[ $wpcs_langs[ $key ][1] ] ) : $wpcs_langs[ $key ][2];
+			if ( $wpcs_target_lang ) {
+				$tip = zhconversion( $tip );
+			}
+			$output .= sprintf( '<option id="wpcs_%s_link" class="%s" value="%s" %s>%s</option>', $key, ( $wpcs_target_lang == $key ? 'wpcs_current_lang' : 'wpcs_lang' ), $key, $checkSelected( $key ), esc_html( $tip ) );
+		}
+
+		$output .= sprintf( '</select>' );
+
+	}
+	$output .= '<!--wpcs_NC_END--></div>' . "\n";
+	if ( ! $echo || $isReturn ) {
+		return $output;
+	}
+	echo $output;
 }
 
 /**
@@ -1058,35 +1069,35 @@ function wpcs_output_navi($args = '', $isReturn = false) {
  *
  */
 function wpcs_output_navi2() {
-    global $wpcs_target_lang, $wpcs_noconversion_url, $wpcs_langs_urls, $wpcs_options;
+	global $wpcs_target_lang, $wpcs_noconversion_url, $wpcs_langs_urls, $wpcs_options;
 
-    if (($wpcs_options['wpcs_browser_redirect'] == 2 || $wpcs_options['wpcs_use_cookie_variant'] == 2) &&
-        $wpcs_target_lang
-    ) {
-        $default_url = wpcs_link_conversion($wpcs_noconversion_url, 'zh');
-        if ($wpcs_options['wpcs_use_permalink'] != 0 && is_home() && ! is_paged()) {
-            $default_url = trailingslashit($default_url);
-        }
-    } else {
-        $default_url = $wpcs_noconversion_url;
-    }
+	if ( ( $wpcs_options['wpcs_browser_redirect'] == 2 || $wpcs_options['wpcs_use_cookie_variant'] == 2 ) &&
+	     $wpcs_target_lang
+	) {
+		$default_url = wpcs_link_conversion( $wpcs_noconversion_url, 'zh' );
+		if ( $wpcs_options['wpcs_use_permalink'] != 0 && is_home() && ! is_paged() ) {
+			$default_url = trailingslashit( $default_url );
+		}
+	} else {
+		$default_url = $wpcs_noconversion_url;
+	}
 
-    $output = "\n" . '<div id="wpcs_widget_inner"><!--wpcs_NC_START-->' . "\n";
-    $output .= '	<span id="wpcs_original_link" class="' . ($wpcs_target_lang == false ? 'wpcs_current_lang' : 'wpcs_lang') . '" ><a class="wpcs_link" href="' . esc_url($default_url) . '" title="'.esc_html('不转换').'">'.esc_html('不转换').'</a></span>' . "\n";
-    $output .= '	<span id="wpcs_cn_link" class="' . ($wpcs_target_lang == 'zh-cn' ? 'wpcs_current_lang' : 'wpcs_lang') . '" ><a class="wpcs_link" rel="nofollow" href="' . esc_url($wpcs_langs_urls['zh-cn']) . '" title="'.esc_html('大陆简体').'" >'.esc_html('大陆简体').'</a></span>' . "\n";
-    $output .= '	<span id="wpcs_tw_link" class="' . ($wpcs_target_lang == 'zh-tw' ? 'wpcs_current_lang' : 'wpcs_lang') . '"><a class="wpcs_link" rel="nofollow" href="' . esc_url($wpcs_langs_urls['zh-tw']) . '" title="'.esc_html('台湾正体').'" >'.esc_html('台湾正体').'</a></span>' . "\n";
-    /*$output .= '	<span id="wpcs_more_links" class="wpcs_lang" >
-      <span id="wpcs_more_links_inner_more" class="'. ( ( $wpcs_target_lang == false || $wpcs_target_lang == 'zh-cn' || $wpcs_target_lang == 'zh-tw' ) ? 'wpcs_lang' : 'wpcs_current_lang' ) . '"><a class="wpcs_link" href="#" onclick="return false;" >其它中文</a></span>
-          <span id="wpcs_more_links_inner" >
-              <span id="wpcs_hans_link" class="' . ( $wpcs_target_lang == 'zh-hans' ? 'wpcs_current_lang' : 'wpcs_lang' ) . '" ><a class="wpcs_link" rel="nofollow" href="' . esc_url($wpcs_langs_urls['zh-hans']) . '" title="简体中文" >简体中文' . '</a></span>
-              <span id="wpcs_hant_link" class="' . ( $wpcs_target_lang == 'zh-hant' ? 'wpcs_current_lang' : 'wpcs_lang' ) . '" ><a class="wpcs_link" rel="nofollow" href="' . esc_url($wpcs_langs_urls['zh-hant']) . '" title="繁体中文" >繁体中文' . '</a></span>
-              <span id="wpcs_hk_link" class="' . ( $wpcs_target_lang == 'zh-hk' ? 'wpcs_current_lang' : 'wpcs_lang' ) . '"><a class="wpcs_link" rel="nofollow" href="' . esc_url($wpcs_langs_urls['zh-hk']) . '" title="港澳繁体" >港澳繁体</a></span>
-              <span id="wpcs_sg_link" class="' . ( $wpcs_target_lang == 'zh-sg' ? 'wpcs_current_lang' : 'wpcs_lang' ) . '" ><a class="wpcs_link" rel="nofollow" href="' . esc_url($wpcs_langs_urls['zh-sg']) . '" title="马新简体" >马新简体</a></span>
-          </span>
-      </span>';*/
+	$output = "\n" . '<div id="wpcs_widget_inner"><!--wpcs_NC_START-->' . "\n";
+	$output .= '	<span id="wpcs_original_link" class="' . ( $wpcs_target_lang == false ? 'wpcs_current_lang' : 'wpcs_lang' ) . '" ><a class="wpcs_link" href="' . esc_url( $default_url ) . '" title="' . esc_html( '不转换' ) . '">' . esc_html( '不转换' ) . '</a></span>' . "\n";
+	$output .= '	<span id="wpcs_cn_link" class="' . ( $wpcs_target_lang == 'zh-cn' ? 'wpcs_current_lang' : 'wpcs_lang' ) . '" ><a class="wpcs_link" rel="nofollow" href="' . esc_url( $wpcs_langs_urls['zh-cn'] ) . '" title="' . esc_html( '大陆简体' ) . '" >' . esc_html( '大陆简体' ) . '</a></span>' . "\n";
+	$output .= '	<span id="wpcs_tw_link" class="' . ( $wpcs_target_lang == 'zh-tw' ? 'wpcs_current_lang' : 'wpcs_lang' ) . '"><a class="wpcs_link" rel="nofollow" href="' . esc_url( $wpcs_langs_urls['zh-tw'] ) . '" title="' . esc_html( '台湾正体' ) . '" >' . esc_html( '台湾正体' ) . '</a></span>' . "\n";
+	/*$output .= '	<span id="wpcs_more_links" class="wpcs_lang" >
+	  <span id="wpcs_more_links_inner_more" class="'. ( ( $wpcs_target_lang == false || $wpcs_target_lang == 'zh-cn' || $wpcs_target_lang == 'zh-tw' ) ? 'wpcs_lang' : 'wpcs_current_lang' ) . '"><a class="wpcs_link" href="#" onclick="return false;" >其它中文</a></span>
+		  <span id="wpcs_more_links_inner" >
+			  <span id="wpcs_hans_link" class="' . ( $wpcs_target_lang == 'zh-hans' ? 'wpcs_current_lang' : 'wpcs_lang' ) . '" ><a class="wpcs_link" rel="nofollow" href="' . esc_url($wpcs_langs_urls['zh-hans']) . '" title="简体中文" >简体中文' . '</a></span>
+			  <span id="wpcs_hant_link" class="' . ( $wpcs_target_lang == 'zh-hant' ? 'wpcs_current_lang' : 'wpcs_lang' ) . '" ><a class="wpcs_link" rel="nofollow" href="' . esc_url($wpcs_langs_urls['zh-hant']) . '" title="繁体中文" >繁体中文' . '</a></span>
+			  <span id="wpcs_hk_link" class="' . ( $wpcs_target_lang == 'zh-hk' ? 'wpcs_current_lang' : 'wpcs_lang' ) . '"><a class="wpcs_link" rel="nofollow" href="' . esc_url($wpcs_langs_urls['zh-hk']) . '" title="港澳繁体" >港澳繁体</a></span>
+			  <span id="wpcs_sg_link" class="' . ( $wpcs_target_lang == 'zh-sg' ? 'wpcs_current_lang' : 'wpcs_lang' ) . '" ><a class="wpcs_link" rel="nofollow" href="' . esc_url($wpcs_langs_urls['zh-sg']) . '" title="马新简体" >马新简体</a></span>
+		  </span>
+	  </span>';*/
 
-    $output .= '<!--wpcs_NC_END--></div>' . "\n";
-    echo $output;
+	$output .= '<!--wpcs_NC_END--></div>' . "\n";
+	echo $output;
 }
 
 /**
@@ -1113,55 +1124,55 @@ function wpcs_output_navi2() {
  * 返回值: false
  *
  */
-function wpcs_get_prefered_language($accept_languages, $target_langs, $flag = 0) {
-    $langs = array();
-    preg_match_all('/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $accept_languages, $lang_parse);
+function wpcs_get_prefered_language( $accept_languages, $target_langs, $flag = 0 ) {
+	$langs = array();
+	preg_match_all( '/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $accept_languages, $lang_parse );
 
-    if (count($lang_parse[1])) {
-        $langs = array_combine($lang_parse[1], $lang_parse[4]);//array_combine需要php5以上版本
-        foreach ($langs as $lang => $val) {
-            if ($val === '') {
-                $langs[$lang] = '1';
-            }
-        }
-        arsort($langs, SORT_NUMERIC);
-        $langs = array_keys($langs);
-        $langs = array_map('strtolower', $langs);
+	if ( count( $lang_parse[1] ) ) {
+		$langs = array_combine( $lang_parse[1], $lang_parse[4] );//array_combine需要php5以上版本
+		foreach ( $langs as $lang => $val ) {
+			if ( $val === '' ) {
+				$langs[ $lang ] = '1';
+			}
+		}
+		arsort( $langs, SORT_NUMERIC );
+		$langs = array_keys( $langs );
+		$langs = array_map( 'strtolower', $langs );
 
-        foreach ($langs as $val) {
-            if (in_array($val, $target_langs)) {
-                return $val;
-            }
-        }
+		foreach ( $langs as $val ) {
+			if ( in_array( $val, $target_langs ) ) {
+				return $val;
+			}
+		}
 
-        if ($flag) {
-            $array = array('zh-hans', 'zh-cn', 'zh-sg', 'zh-my');
-            $a     = array_intersect($array, $target_langs);
-            if ( ! empty($a)) {
-                $b = array_intersect($array, $langs);
-                if ( ! empty($b)) {
-                    $a = each($a);
+		if ( $flag ) {
+			$array = array( 'zh-hans', 'zh-cn', 'zh-sg', 'zh-my' );
+			$a     = array_intersect( $array, $target_langs );
+			if ( ! empty( $a ) ) {
+				$b = array_intersect( $array, $langs );
+				if ( ! empty( $b ) ) {
+					$a = each( $a );
 
-                    return $a[1];
-                }
-            }
+					return $a[1];
+				}
+			}
 
-            $array = array('zh-hant', 'zh-tw', 'zh-hk', 'zh-mo');
-            $a     = array_intersect($array, $target_langs);
-            if ( ! empty($a)) {
-                $b = array_intersect($array, $langs);
-                if ( ! empty($b)) {
-                    $a = each($a);
+			$array = array( 'zh-hant', 'zh-tw', 'zh-hk', 'zh-mo' );
+			$a     = array_intersect( $array, $target_langs );
+			if ( ! empty( $a ) ) {
+				$b = array_intersect( $array, $langs );
+				if ( ! empty( $b ) ) {
+					$a = each( $a );
 
-                    return $a[1];
-                }
-            }
-        }
+					return $a[1];
+				}
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    return false;
+	return false;
 }
 
 /**
@@ -1172,46 +1183,46 @@ function wpcs_get_prefered_language($accept_languages, $target_langs, $flag = 0)
  * @uses $_SERVER['HTTP_USER_AGENT']
  */
 function wpcs_is_robot() {
-    if (empty($_SERVER['HTTP_USER_AGENT'])) {
-        return true;
-    }
-    $ua = strtoupper($_SERVER['HTTP_USER_AGENT']);
+	if ( empty( $_SERVER['HTTP_USER_AGENT'] ) ) {
+		return true;
+	}
+	$ua = strtoupper( $_SERVER['HTTP_USER_AGENT'] );
 
-    $robots = array(
-        'bot',
-        'spider',
-        'crawler',
-        'dig',
-        'search',
-        'find'
-    );
+	$robots = array(
+		'bot',
+		'spider',
+		'crawler',
+		'dig',
+		'search',
+		'find'
+	);
 
-    foreach ($robots as $key => $val) {
-        if (strstr($ua, strtoupper($val))) {
-            return true;
-        }
-    }
+	foreach ( $robots as $key => $val ) {
+		if ( strstr( $ua, strtoupper( $val ) ) ) {
+			return true;
+		}
+	}
 
-    $browsers = array(
-        "compatible; MSIE",
-        "UP.Browser",
-        "Mozilla",
-        "Opera",
-        "NSPlayer",
-        "Avant Browser",
-        "Chrome",
-        "Gecko",
-        "Safari",
-        "Lynx",
-    );
+	$browsers = array(
+		"compatible; MSIE",
+		"UP.Browser",
+		"Mozilla",
+		"Opera",
+		"NSPlayer",
+		"Avant Browser",
+		"Chrome",
+		"Gecko",
+		"Safari",
+		"Lynx",
+	);
 
-    foreach ($browsers as $key => $val) {
-        if (strstr($ua, strtoupper($val))) {
-            return false;
-        }
-    }
+	foreach ( $browsers as $key => $val ) {
+		if ( strstr( $ua, strtoupper( $val ) ) ) {
+			return false;
+		}
+	}
 
-    return true;
+	return true;
 }
 
 /**
@@ -1220,12 +1231,12 @@ function wpcs_is_robot() {
  *
  */
 function wpcs_apply_filter_search_rule() {
-    add_filter('posts_where', 'wpcs_filter_search_rule', 100);
-    function search_distinct() {
-        return "DISTINCT";
-    }
+	add_filter( 'posts_where', 'wpcs_filter_search_rule', 100 );
+	function search_distinct() {
+		return "DISTINCT";
+	}
 
-    add_filter('posts_distinct', 'search_distinct');
+	add_filter( 'posts_distinct', 'search_distinct' );
 }
 
 /**
@@ -1245,65 +1256,65 @@ function wpcs_apply_filter_search_rule() {
  * ( ( wp_posts.post_title LIKE '%简体%') OR ( wp_posts.post_content LIKE '%简体%') OR ( wp_posts.post_title LIKE '%简体%') OR ( wp_posts.post_content LIKE '%简体%') ) AND ( ( wp_posts.post_title LIKE '%繁体%') OR ( wp_posts.post_content LIKE '%繁体%') OR ( wp_posts.post_title LIKE '%繁体%') OR ( wp_posts.post_content LIKE '%繁体%') ) AND ( ( wp_posts.post_title LIKE '%中文%') OR ( wp_posts.post_content LIKE '%中文%') ) OR ( wp_posts.post_title LIKE '%简体 繁体 中文%') OR ( wp_posts.post_content LIKE '%简体 繁体 中文%') OR ( wp_posts.post_title LIKE '%简体 繁体 中文%') OR ( wp_posts.post_content LIKE '%简体 繁体 中文%') OR ( wp_posts.post_title LIKE '%简体 繁体 中文%') OR ( wp_posts.post_content LIKE '%简体 繁体 中文%')
  *
  */
-function wpcs_filter_search_rule($where) {
-    global $wp_query, $wpdb;
-    if (empty($wp_query->query_vars['s'])) {
-        return $where;
-    }
-    if ( ! preg_match("/^([" . chr(228) . "-" . chr(233) . "]{1}[" . chr(128) . "-" . chr(191) . "]{1}[" . chr(128) . "-" . chr(191) . "]{1}){1}/", $wp_query->query_vars['s']) && ! preg_match("/([" . chr(228) . "-" . chr(233) . "]{1}[" . chr(128) . "-" . chr(191) . "]{1}[" . chr(128) . "-" . chr(191) . "]{1}){1}$/", $wp_query->query_vars['s']) && ! preg_match("/([" . chr(228) . "-" . chr(233) . "]{1}[" . chr(128) . "-" . chr(191) . "]{1}[" . chr(128) . "-" . chr(191) . "]{1}){2,}/", $wp_query->query_vars['s'])) {
-        return $where;
-    }//如果搜索关键字中不含中文本符, 直接返回
+function wpcs_filter_search_rule( $where ) {
+	global $wp_query, $wpdb;
+	if ( empty( $wp_query->query_vars['s'] ) ) {
+		return $where;
+	}
+	if ( ! preg_match( "/^([" . chr( 228 ) . "-" . chr( 233 ) . "]{1}[" . chr( 128 ) . "-" . chr( 191 ) . "]{1}[" . chr( 128 ) . "-" . chr( 191 ) . "]{1}){1}/", $wp_query->query_vars['s'] ) && ! preg_match( "/([" . chr( 228 ) . "-" . chr( 233 ) . "]{1}[" . chr( 128 ) . "-" . chr( 191 ) . "]{1}[" . chr( 128 ) . "-" . chr( 191 ) . "]{1}){1}$/", $wp_query->query_vars['s'] ) && ! preg_match( "/([" . chr( 228 ) . "-" . chr( 233 ) . "]{1}[" . chr( 128 ) . "-" . chr( 191 ) . "]{1}[" . chr( 128 ) . "-" . chr( 191 ) . "]{1}){2,}/", $wp_query->query_vars['s'] ) ) {
+		return $where;
+	}//如果搜索关键字中不含中文本符, 直接返回
 
-    wpcs_load_conversion_table();
+	wpcs_load_conversion_table();
 
-    $placeholder = '%';
-    if (method_exists($wpdb, 'placeholder_escape')) {
-        $placeholder = $wpdb->placeholder_escape("%");
-        // echo("pe exists: " . $placeholder . '<br />');
-    }
-    $sql      = '';
-    $and1     = '';
-    $original = '';//Wordpress原始搜索sql代码中 post_title和post_content like '%keyword%'的部分,本函数最后需要找出原始sql代码中这部分并予以替换, 所以必须在过程中重新生成一遍,
-    foreach ($wp_query->query_vars['search_terms'] as $value) {
-        $value    = addslashes_gpc($value);
-        $original .= "{$and1}(($wpdb->posts.post_title LIKE '{$placeholder}{$value}{$placeholder}') OR ($wpdb->posts.post_excerpt LIKE '{$placeholder}{$value}{$placeholder}') OR ($wpdb->posts.post_content LIKE '{$placeholder}{$value}{$placeholder}'))";
-        $valuea   = zhconversion_all($value);
-        $valuea[] = $value;
-        $sql      .= "{$and1}( ";
-        $or2      = '';
-        foreach ($valuea as $v) {
-            $sql .= "{$or2}( " . $wpdb->prefix . "posts.post_title LIKE '{$placeholder}" . $v . "{$placeholder}') ";
-            $sql .= " OR ( " . $wpdb->prefix . "posts.post_content LIKE '{$placeholder}" . $v . "{$placeholder}') ";
-            $sql .= " OR ( " . $wpdb->prefix . "posts.post_excerpt LIKE '{$placeholder}" . $v . "{$placeholder}') ";
-            $or2 = ' OR ';
-        }
-        $sql  .= ' ) ';
-        $and1 = ' AND ';
-    }
+	$placeholder = '%';
+	if ( method_exists( $wpdb, 'placeholder_escape' ) ) {
+		$placeholder = $wpdb->placeholder_escape( "%" );
+		// echo("pe exists: " . $placeholder . '<br />');
+	}
+	$sql      = '';
+	$and1     = '';
+	$original = '';//Wordpress原始搜索sql代码中 post_title和post_content like '%keyword%'的部分,本函数最后需要找出原始sql代码中这部分并予以替换, 所以必须在过程中重新生成一遍,
+	foreach ( $wp_query->query_vars['search_terms'] as $value ) {
+		$value    = addslashes_gpc( $value );
+		$original .= "{$and1}(($wpdb->posts.post_title LIKE '{$placeholder}{$value}{$placeholder}') OR ($wpdb->posts.post_excerpt LIKE '{$placeholder}{$value}{$placeholder}') OR ($wpdb->posts.post_content LIKE '{$placeholder}{$value}{$placeholder}'))";
+		$valuea   = zhconversion_all( $value );
+		$valuea[] = $value;
+		$sql      .= "{$and1}( ";
+		$or2      = '';
+		foreach ( $valuea as $v ) {
+			$sql .= "{$or2}( " . $wpdb->prefix . "posts.post_title LIKE '{$placeholder}" . $v . "{$placeholder}') ";
+			$sql .= " OR ( " . $wpdb->prefix . "posts.post_content LIKE '{$placeholder}" . $v . "{$placeholder}') ";
+			$sql .= " OR ( " . $wpdb->prefix . "posts.post_excerpt LIKE '{$placeholder}" . $v . "{$placeholder}') ";
+			$or2 = ' OR ';
+		}
+		$sql  .= ' ) ';
+		$and1 = ' AND ';
+	}
 
-    // debug
-    // echo("Where: ". $where . "<br /><br />Search: " . $original . "<br /><br />Replace with: $sql");die();
+	// debug
+	// echo("Where: ". $where . "<br /><br />Search: " . $original . "<br /><br />Replace with: $sql");die();
 
-    if (empty($sql)) {
-        return $where;
-    }
-    $where = preg_replace('/' . preg_quote($original, '/') . '/', $sql, $where, 1);
+	if ( empty( $sql ) ) {
+		return $where;
+	}
+	$where = preg_replace( '/' . preg_quote( $original, '/' ) . '/', $sql, $where, 1 );
 
-    return $where;
+	return $where;
 }
 
 /**
  * ob_start Callback function
  *
  */
-function wpcs_ob_callback($buffer) {
-    global $wpcs_target_lang, $wpcs_direct_conversion_flag;
-    if ($wpcs_target_lang && ! $wpcs_direct_conversion_flag) {
-        $wpcs_home_url = wpcs_link_conversion_auto(home_url('/'));
-        $buffer        = preg_replace('|(<a\s(?!class="wpcs_link")[^<>]*?href=([\'"]))' . preg_quote(esc_url(home_url('')), '|') . '/?(\2[^<>]*?>)|', '\\1' . esc_url($wpcs_home_url) . '\\3', $buffer);
-    }
+function wpcs_ob_callback( $buffer ) {
+	global $wpcs_target_lang, $wpcs_direct_conversion_flag;
+	if ( $wpcs_target_lang && ! $wpcs_direct_conversion_flag ) {
+		$wpcs_home_url = wpcs_link_conversion_auto( home_url( '/' ) );
+		$buffer        = preg_replace( '|(<a\s(?!class="wpcs_link")[^<>]*?href=([\'"]))' . preg_quote( esc_url( home_url( '' ) ), '|' ) . '/?(\2[^<>]*?>)|', '\\1' . esc_url( $wpcs_home_url ) . '\\3', $buffer );
+	}
 
-    return zhconversion2($buffer) . "\n" . '<!-- WP Chinese Switcher Full Page Converted. Target Lang: ' . $wpcs_target_lang . ' -->';
+	return zhconversion2( $buffer ) . "\n" . '<!-- WP Chinese Switcher Full Page Converted. Target Lang: ' . $wpcs_target_lang . ' -->';
 }
 
 /**
@@ -1314,25 +1325,25 @@ function wpcs_ob_callback($buffer) {
  *
  */
 function wpcs_debug() {
-    global $wpcs_noconversion_url, $wpcs_target_lang, $wpcs_langs_urls, $wpcs_deubg_data, $wpcs_langs, $wpcs_options, $wp_rewrite;
-    echo '<!--';
-    echo '<p style="font-size:20px;color:red;">';
-    echo 'WP Chinese Switcher Plugin Debug Output:<br />';
-    echo '默认URL: <a href="' . $wpcs_noconversion_url . '">' . $wpcs_noconversion_url . '</a><br />';
-    echo '当前语言(空则是不转换): ' . $wpcs_target_lang . "<br />";
-    echo 'Query String: ' . $_SERVER['QUERY_STRING'] . '<br />';
-    echo 'Request URI: ' . $_SERVER['REQUEST_URI'] . '<br />';
-    foreach ($wpcs_langs_urls as $key => $value) {
-        echo $key . ' URL: <a href="' . $value . '">' . $value . '</a><br />';
-    }
-    echo 'Category feed link: ' . get_category_feed_link(1) . '<br />';
-    echo 'Search feed link: ' . get_search_feed_link('test');
-    echo 'Rewrite Rules: <br />';
-    echo nl2br(htmlspecialchars(var_export($wp_rewrite->rewrite_rules(), true))) . '<br />';
-    echo 'Debug Data: <br />';
-    echo nl2br(htmlspecialchars(var_export($wpcs_deubg_data, true)));
-    echo '</p>';
-    echo '-->';
+	global $wpcs_noconversion_url, $wpcs_target_lang, $wpcs_langs_urls, $wpcs_deubg_data, $wpcs_langs, $wpcs_options, $wp_rewrite;
+	echo '<!--';
+	echo '<p style="font-size:20px;color:red;">';
+	echo 'WP Chinese Switcher Plugin Debug Output:<br />';
+	echo '默认URL: <a href="' . $wpcs_noconversion_url . '">' . $wpcs_noconversion_url . '</a><br />';
+	echo '当前语言(空则是不转换): ' . $wpcs_target_lang . "<br />";
+	echo 'Query String: ' . $_SERVER['QUERY_STRING'] . '<br />';
+	echo 'Request URI: ' . $_SERVER['REQUEST_URI'] . '<br />';
+	foreach ( $wpcs_langs_urls as $key => $value ) {
+		echo $key . ' URL: <a href="' . $value . '">' . $value . '</a><br />';
+	}
+	echo 'Category feed link: ' . get_category_feed_link( 1 ) . '<br />';
+	echo 'Search feed link: ' . get_search_feed_link( 'test' );
+	echo 'Rewrite Rules: <br />';
+	echo nl2br( htmlspecialchars( var_export( $wp_rewrite->rewrite_rules(), true ) ) ) . '<br />';
+	echo 'Debug Data: <br />';
+	echo nl2br( htmlspecialchars( var_export( $wpcs_deubg_data, true ) ) );
+	echo '</p>';
+	echo '-->';
 }
 
 /**
@@ -1340,9 +1351,9 @@ function wpcs_debug() {
  *
  */
 function wpcs_admin_init() {
-    global $wpcs_admin;
-    require_once(dirname(__FILE__) . '/wpchinese-switcher-admin.php');
-    $wpcs_admin = new wpcs_Admin();
+	global $wpcs_admin;
+	require_once( dirname( __FILE__ ) . '/wpchinese-switcher-admin.php' );
+	$wpcs_admin = new wpcs_Admin();
 }
 
 /**
@@ -1356,113 +1367,113 @@ function wpcs_admin_init() {
  * 并且还做其它一些事情.
  *
  */
-function wpcs_parse_query($query) {
-    if (is_robots()) {
-        return;
-    }
-    global $wpcs_target_lang, $wpcs_redirect_to, $wpcs_noconversion_url, $wpcs_options, $wpcs_direct_conversion_flag;
+function wpcs_parse_query( $query ) {
+	if ( is_robots() ) {
+		return;
+	}
+	global $wpcs_target_lang, $wpcs_redirect_to, $wpcs_noconversion_url, $wpcs_options, $wpcs_direct_conversion_flag;
 
-    if ( ! is_404()) {
-        $wpcs_noconversion_url = wpcs_get_noconversion_url();
-    } else {
-        $wpcs_noconversion_url = get_option('home') . '/';
-        $wpcs_target_lang      = false;
+	if ( ! is_404() ) {
+		$wpcs_noconversion_url = wpcs_get_noconversion_url();
+	} else {
+		$wpcs_noconversion_url = get_option( 'home' ) . '/';
+		$wpcs_target_lang      = false;
 
-        return;
-    }
+		return;
+	}
 
-    $request_lang = isset($query->query_vars['variant']) ? $query->query_vars['variant'] : '';
-    $cookie_lang  = isset($_COOKIE['wpcs_variant_' . COOKIEHASH]) ? $_COOKIE['wpcs_variant_' . COOKIEHASH] : '';
+	$request_lang = isset( $query->query_vars['variant'] ) ? $query->query_vars['variant'] : '';
+	$cookie_lang  = isset( $_COOKIE[ 'wpcs_variant_' . COOKIEHASH ] ) ? $_COOKIE[ 'wpcs_variant_' . COOKIEHASH ] : '';
 
-    if ($request_lang && in_array($request_lang, $wpcs_options['wpcs_used_langs'])) {
-        $wpcs_target_lang = $request_lang;
-    } else {
-        $wpcs_target_lang = false;
-    }
+	if ( $request_lang && in_array( $request_lang, $wpcs_options['wpcs_used_langs'] ) ) {
+		$wpcs_target_lang = $request_lang;
+	} else {
+		$wpcs_target_lang = false;
+	}
 
-    if ( ! $wpcs_target_lang) {
-        if ($request_lang == 'zh') {
-            if ($wpcs_options['wpcs_use_cookie_variant'] != 0) {
-                setcookie('wpcs_variant_' . COOKIEHASH, 'zh', time() + 30000000, COOKIEPATH, COOKIE_DOMAIN);
-            } else {
-                setcookie('wpcs_is_redirect_' . COOKIEHASH, '1', 0, COOKIEPATH, COOKIE_DOMAIN);
-            }
-            header('Location: ' . $wpcs_noconversion_url);
-            die();
-        }
-        if ($request_lang == 'zh-reset') {
-            setcookie('wpcs_variant_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN);
-            setcookie('wpcs_is_redirect_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN);
-            header('Location: ' . $wpcs_noconversion_url);
-            die();
-        }
+	if ( ! $wpcs_target_lang ) {
+		if ( $request_lang == 'zh' ) {
+			if ( $wpcs_options['wpcs_use_cookie_variant'] != 0 ) {
+				setcookie( 'wpcs_variant_' . COOKIEHASH, 'zh', time() + 30000000, COOKIEPATH, COOKIE_DOMAIN );
+			} else {
+				setcookie( 'wpcs_is_redirect_' . COOKIEHASH, '1', 0, COOKIEPATH, COOKIE_DOMAIN );
+			}
+			header( 'Location: ' . $wpcs_noconversion_url );
+			die();
+		}
+		if ( $request_lang == 'zh-reset' ) {
+			setcookie( 'wpcs_variant_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN );
+			setcookie( 'wpcs_is_redirect_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN );
+			header( 'Location: ' . $wpcs_noconversion_url );
+			die();
+		}
 
-        if ($cookie_lang == 'zh') {
-            if ($wpcs_options['wpcs_use_cookie_variant'] != 0) {
-                if ($wpcs_options['wpcs_search_conversion'] == 2) {
-                    wpcs_apply_filter_search_rule();
-                }
+		if ( $cookie_lang == 'zh' ) {
+			if ( $wpcs_options['wpcs_use_cookie_variant'] != 0 ) {
+				if ( $wpcs_options['wpcs_search_conversion'] == 2 ) {
+					wpcs_apply_filter_search_rule();
+				}
 
-                return;
-            } else {
-                setcookie('wpcs_variant_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN);
-            }
-        }
+				return;
+			} else {
+				setcookie( 'wpcs_variant_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN );
+			}
+		}
 
-        if ( ! $request_lang && ! empty($_COOKIE['wpcs_is_redirect_' . COOKIEHASH])) {
-            if ($wpcs_options['wpcs_use_cookie_variant'] != 0) {
-                setcookie('wpcs_variant_' . COOKIEHASH, 'zh', time() + 30000000, COOKIEPATH, COOKIE_DOMAIN);
-                setcookie('wpcs_is_redirect_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN);
-            } else if ($cookie_lang) {
-                setcookie('wpcs_variant_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN);
-            }
-            if ($wpcs_options['wpcs_search_conversion'] == 2) {
-                wpcs_apply_filter_search_rule();
-            }
+		if ( ! $request_lang && ! empty( $_COOKIE[ 'wpcs_is_redirect_' . COOKIEHASH ] ) ) {
+			if ( $wpcs_options['wpcs_use_cookie_variant'] != 0 ) {
+				setcookie( 'wpcs_variant_' . COOKIEHASH, 'zh', time() + 30000000, COOKIEPATH, COOKIE_DOMAIN );
+				setcookie( 'wpcs_is_redirect_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN );
+			} else if ( $cookie_lang ) {
+				setcookie( 'wpcs_variant_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN );
+			}
+			if ( $wpcs_options['wpcs_search_conversion'] == 2 ) {
+				wpcs_apply_filter_search_rule();
+			}
 
-            return;
-        }
-        $is_robot = wpcs_is_robot();
-        if ($wpcs_options['wpcs_use_cookie_variant'] != 0 && ! $is_robot && $cookie_lang) {
-            if (in_array($cookie_lang, $wpcs_options['wpcs_used_langs'])) {
-                if ($wpcs_options['wpcs_use_cookie_variant'] == 2) {
-                    $wpcs_target_lang            = $cookie_lang;
-                    $wpcs_direct_conversion_flag = true;
-                } else {
-                    $wpcs_redirect_to = $cookie_lang;
-                }
-            } else {
-                setcookie('wpcs_variant_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN);
-            }
-        } else {
-            if ($cookie_lang) {
-                setcookie('wpcs_variant_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN);
-            }
-            if (
-                $wpcs_options['wpcs_browser_redirect'] != 0 &&
-                ! $is_robot &&
-                ! empty($_SERVER['HTTP_ACCEPT_LANGUAGE']) &&
-                $wpcs_browser_lang = wpcs_get_prefered_language($_SERVER['HTTP_ACCEPT_LANGUAGE'], $wpcs_options['wpcs_used_langs'], $wpcs_options['wpcs_auto_language_recong'])
-            ) {
-                if ($wpcs_options['wpcs_browser_redirect'] == 2) {
-                    $wpcs_target_lang            = $wpcs_browser_lang;
-                    $wpcs_direct_conversion_flag = true;
-                } else {
-                    $wpcs_redirect_to = $wpcs_browser_lang;
-                }
-            }
-        }
-    }
+			return;
+		}
+		$is_robot = wpcs_is_robot();
+		if ( $wpcs_options['wpcs_use_cookie_variant'] != 0 && ! $is_robot && $cookie_lang ) {
+			if ( in_array( $cookie_lang, $wpcs_options['wpcs_used_langs'] ) ) {
+				if ( $wpcs_options['wpcs_use_cookie_variant'] == 2 ) {
+					$wpcs_target_lang            = $cookie_lang;
+					$wpcs_direct_conversion_flag = true;
+				} else {
+					$wpcs_redirect_to = $cookie_lang;
+				}
+			} else {
+				setcookie( 'wpcs_variant_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN );
+			}
+		} else {
+			if ( $cookie_lang ) {
+				setcookie( 'wpcs_variant_' . COOKIEHASH, '', time() - 30000000, COOKIEPATH, COOKIE_DOMAIN );
+			}
+			if (
+				$wpcs_options['wpcs_browser_redirect'] != 0 &&
+				! $is_robot &&
+				! empty( $_SERVER['HTTP_ACCEPT_LANGUAGE'] ) &&
+				$wpcs_browser_lang = wpcs_get_prefered_language( $_SERVER['HTTP_ACCEPT_LANGUAGE'], $wpcs_options['wpcs_used_langs'], $wpcs_options['wpcs_auto_language_recong'] )
+			) {
+				if ( $wpcs_options['wpcs_browser_redirect'] == 2 ) {
+					$wpcs_target_lang            = $wpcs_browser_lang;
+					$wpcs_direct_conversion_flag = true;
+				} else {
+					$wpcs_redirect_to = $wpcs_browser_lang;
+				}
+			}
+		}
+	}
 
-    if ($wpcs_options['wpcs_search_conversion'] == 2 ||
-        ($wpcs_target_lang && $wpcs_options['wpcs_search_conversion'] == 1)
-    ) {
-        wpcs_apply_filter_search_rule();
-    }
+	if ( $wpcs_options['wpcs_search_conversion'] == 2 ||
+	     ( $wpcs_target_lang && $wpcs_options['wpcs_search_conversion'] == 1 )
+	) {
+		wpcs_apply_filter_search_rule();
+	}
 
-    if ($wpcs_target_lang && $wpcs_options['wpcs_use_cookie_variant'] != 0 && $cookie_lang != $wpcs_target_lang) {
-        setcookie('wpcs_variant_' . COOKIEHASH, $wpcs_target_lang, time() + 30000000, COOKIEPATH, COOKIE_DOMAIN);
-    }
+	if ( $wpcs_target_lang && $wpcs_options['wpcs_use_cookie_variant'] != 0 && $cookie_lang != $wpcs_target_lang ) {
+		setcookie( 'wpcs_variant_' . COOKIEHASH, $wpcs_target_lang, time() + 30000000, COOKIEPATH, COOKIE_DOMAIN );
+	}
 
 }
 
@@ -1472,21 +1483,21 @@ function wpcs_parse_query($query) {
  * 出于节省内存考虑, 本插件并不总是载入繁简转换表. 而仅在繁简转换页面才这样做.
  */
 function wpcs_load_conversion_table() {
-    global $wpcs_options;
-    if ( ! empty($wpcs_options['wpcs_no_conversion_ja']) || ! empty($wpcs_options['wpcs_no_conversion_tag'])) {
-        if ( ! function_exists('str_get_html')) {
-            require_once(__DIR__ . '/simple_html_dom.php');
-        }
-    }
+	global $wpcs_options;
+	if ( ! empty( $wpcs_options['wpcs_no_conversion_ja'] ) || ! empty( $wpcs_options['wpcs_no_conversion_tag'] ) ) {
+		if ( ! function_exists( 'str_get_html' ) ) {
+			require_once( __DIR__ . '/simple_html_dom.php' );
+		}
+	}
 
-    global $zh2Hans;
-    if ($zh2Hans == false) {
-        global $zh2Hant, $zh2TW, $zh2CN, $zh2SG, $zh2HK;
-        require_once(dirname(__FILE__) . '/ZhConversion.php');
-        if (file_exists(WP_CONTENT_DIR . '/extra_zhconversion.php')) {
-            require_once(WP_CONTENT_DIR . '/extra_zhconversion.php');
-        }
-    }
+	global $zh2Hans;
+	if ( $zh2Hans == false ) {
+		global $zh2Hant, $zh2TW, $zh2CN, $zh2SG, $zh2HK;
+		require_once( dirname( __FILE__ ) . '/ZhConversion.php' );
+		if ( file_exists( WP_CONTENT_DIR . '/extra_zhconversion.php' ) ) {
+			require_once( WP_CONTENT_DIR . '/extra_zhconversion.php' );
+		}
+	}
 }
 
 /**
@@ -1494,117 +1505,123 @@ function wpcs_load_conversion_table() {
  *
  */
 function wpcs_do_conversion() {
-    global $wpcs_direct_conversion_flag, $wpcs_options;
-    wpcs_load_conversion_table();
+	global $wpcs_direct_conversion_flag, $wpcs_options;
+	wpcs_load_conversion_table();
 
-    add_action('wp_head', 'wpcs_header');
+	add_action( 'wp_head', 'wpcs_header' );
 
-    if ( ! $wpcs_direct_conversion_flag) {
-        remove_action('wp_head', 'rel_canonical');
-        add_action('wp_head', 'wpcs_rel_canonical');
+	if ( ! $wpcs_direct_conversion_flag ) {
+		remove_action( 'wp_head', 'rel_canonical' );
+		add_action( 'wp_head', 'wpcs_rel_canonical' );
 
-        //add_filter('the_permalink', 'wpcs_link_conversion');
-        add_filter('post_link', 'wpcs_link_conversion');
-        add_filter('month_link', 'wpcs_link_conversion');
-        add_filter('day_link', 'wpcs_link_conversion');
-        add_filter('year_link', 'wpcs_link_conversion');
-        add_filter('page_link', 'wpcs_link_conversion');
-        add_filter('tag_link', 'wpcs_link_conversion');
-        add_filter('author_link', 'wpcs_link_conversion');
-        add_filter('category_link', 'wpcs_link_conversion');
-        add_filter('feed_link', 'wpcs_link_conversion');
-        add_filter('attachment_link', 'wpcs_link_conversion');
-        add_filter('search_feed_link', 'wpcs_link_conversion');
+		//add_filter('the_permalink', 'wpcs_link_conversion');
+		add_filter( 'post_link', 'wpcs_link_conversion' );
+		add_filter( 'month_link', 'wpcs_link_conversion' );
+		add_filter( 'day_link', 'wpcs_link_conversion' );
+		add_filter( 'year_link', 'wpcs_link_conversion' );
+		add_filter( 'page_link', 'wpcs_link_conversion' );
+		add_filter( 'tag_link', 'wpcs_link_conversion' );
+		add_filter( 'author_link', 'wpcs_link_conversion' );
+		add_filter( 'category_link', 'wpcs_link_conversion' );
+		add_filter( 'feed_link', 'wpcs_link_conversion' );
+		add_filter( 'attachment_link', 'wpcs_link_conversion' );
+		add_filter( 'search_feed_link', 'wpcs_link_conversion' );
 
-        add_filter('category_feed_link', 'wpcs_fix_link_conversion');
-        add_filter('tag_feed_link', 'wpcs_fix_link_conversion');
-        add_filter('author_feed_link', 'wpcs_fix_link_conversion');
-        add_filter('post_comments_feed_link', 'wpcs_fix_link_conversion');
-        add_filter('get_comments_pagenum_link', 'wpcs_fix_link_conversion');
-        add_filter('get_comment_link', 'wpcs_fix_link_conversion');
+		add_filter( 'category_feed_link', 'wpcs_fix_link_conversion' );
+		add_filter( 'tag_feed_link', 'wpcs_fix_link_conversion' );
+		add_filter( 'author_feed_link', 'wpcs_fix_link_conversion' );
+		add_filter( 'post_comments_feed_link', 'wpcs_fix_link_conversion' );
+		add_filter( 'get_comments_pagenum_link', 'wpcs_fix_link_conversion' );
+		add_filter( 'get_comment_link', 'wpcs_fix_link_conversion' );
 
-        add_filter('attachment_link', 'wpcs_cancel_link_conversion');
-        add_filter('trackback_url', 'wpcs_cancel_link_conversion');
+		add_filter( 'attachment_link', 'wpcs_cancel_link_conversion' );
+		add_filter( 'trackback_url', 'wpcs_cancel_link_conversion' );
 
-        add_filter('get_pagenum_link', 'wpcs_pagenum_link_fix');
-        add_filter('redirect_canonical', 'wpcs_cancel_incorrect_redirect', 10, 2);
-    }
+		add_filter( 'get_pagenum_link', 'wpcs_pagenum_link_fix' );
+		add_filter( 'redirect_canonical', 'wpcs_cancel_incorrect_redirect', 10, 2 );
+	}
 
-    if ( ! empty($wpcs_options['wpcs_no_conversion_ja']) || ! empty($wpcs_options['wpcs_no_conversion_tag'])) {
-        add_filter('the_content', 'wpcs_no_conversion_filter', 15);
-        add_filter('the_content_rss', 'wpcs_no_conversion_filter', 15);
-    }
+	if ( ! empty( $wpcs_options['wpcs_no_conversion_ja'] ) || ! empty( $wpcs_options['wpcs_no_conversion_tag'] ) ) {
+		add_filter( 'the_content', 'wpcs_no_conversion_filter', 15 );
+		add_filter( 'the_content_rss', 'wpcs_no_conversion_filter', 15 );
+	}
 
-    if ($wpcs_options['wpcs_use_fullpage_conversion'] == 1) {
-        @ob_start('wpcs_ob_callback');
-        /*
-            function wpcs_ob_end() {
-                while( @ob_end_flush() );
-            }
-            add_action('shutdown', 'wpcs_ob_end');
-            */
+	if ( $wpcs_options['wpcs_use_fullpage_conversion'] == 1 ) {
+		@ob_start( 'wpcs_ob_callback' );
+		/*
+			function wpcs_ob_end() {
+				while( @ob_end_flush() );
+			}
+			add_action('shutdown', 'wpcs_ob_end');
+			*/
 
-        //一般不需要这段代码, Wordpress默认在shutdown时循环调用ob_end_flush关闭所有缓存.
+		//一般不需要这段代码, Wordpress默认在shutdown时循环调用ob_end_flush关闭所有缓存.
 
-        return;
-    }
+		return;
+	}
 
-    add_filter('the_content', 'zhconversion2', 20);
-    add_filter('the_content_rss', 'zhconversion2', 20);
-    add_filter('the_excerpt', 'zhconversion2', 20);
-    add_filter('the_excerpt_rss', 'zhconversion2', 20);
+	add_filter( 'the_content', 'zhconversion2', 20 );
+	add_filter( 'the_content_rss', 'zhconversion2', 20 );
+	add_filter( 'the_excerpt', 'zhconversion2', 20 );
+	add_filter( 'the_excerpt_rss', 'zhconversion2', 20 );
 
-    add_filter('the_title', 'zhconversion');
-    add_filter('comment_text', 'zhconversion');
-    add_filter('bloginfo', 'zhconversion');
-    add_filter('the_tags', 'zhconversion_deep');
-    add_filter('term_links-post_tag', 'zhconversion_deep');
-    add_filter('wp_tag_cloud', 'zhconversion');
-    add_filter('the_category', 'zhconversion');
-    add_filter('list_cats', 'zhconversion');
-    add_filter('category_description', 'zhconversion');
-    add_filter('single_cat_title', 'zhconversion');
-    add_filter('single_post_title', 'zhconversion');
-    add_filter('bloginfo_rss', 'zhconversion');
-    add_filter('the_title_rss', 'zhconversion');
-    add_filter('comment_text_rss', 'zhconversion');
+	add_filter( 'the_title', 'zhconversion' );
+	add_filter( 'comment_text', 'zhconversion' );
+	add_filter( 'bloginfo', 'zhconversion' );
+	add_filter( 'the_tags', 'zhconversion_deep' );
+	add_filter( 'term_links-post_tag', 'zhconversion_deep' );
+	add_filter( 'wp_tag_cloud', 'zhconversion' );
+	add_filter( 'the_category', 'zhconversion' );
+	add_filter( 'list_cats', 'zhconversion' );
+	add_filter( 'category_description', 'zhconversion' );
+	add_filter( 'single_cat_title', 'zhconversion' );
+	add_filter( 'single_post_title', 'zhconversion' );
+	add_filter( 'bloginfo_rss', 'zhconversion' );
+	add_filter( 'the_title_rss', 'zhconversion' );
+	add_filter( 'comment_text_rss', 'zhconversion' );
 }
 
 function my_plugin_enqueue_block_editor_assets() {
-    global $wpcs_options;
-    set_wpcs_langs_urls();
-    wp_register_script( 'wpcs-block-script', plugins_url( '/assets/js/gudengbao.js', __FILE__ ), array( 'wp-blocks', 'wp-element' ), '1.2.0' );
-    wp_enqueue_script( 'wpcs-block-script');
-    // naviArray
-    $html = wpcs_output_navi('', true);
-    $doc = new DOMDocument;
-    $doc->loadHTML('<?xml encoding="utf-8" ?>' . $html);
-    $xpath = new DOMXPath($doc);
+	global $wpcs_options;
+	set_wpcs_langs_urls();
+	wp_register_script( 'wpcs-block-script', plugins_url( '/assets/js/gudengbao.js', __FILE__ ), array(
+		'wp-blocks',
+		'wp-element'
+	), '1.2.1' );
+	wp_enqueue_script( 'wpcs-block-script' );
+	// naviArray
+	$html = wpcs_output_navi( '', true );
+	$doc  = new DOMDocument;
+	$doc->loadHTML( '<?xml encoding="utf-8" ?>' . $html );
+	$xpath = new DOMXPath( $doc );
 
-    $aProps = [];
-    $wpcs_translate_type = $wpcs_options['wpcs_translate_type'] ?? 0;
+	$aProps              = [];
+	$wpcs_translate_type = $wpcs_options['wpcs_translate_type'] ?? 0;
 
-    if ($wpcs_translate_type == 0) {
-        $spanNodes = $xpath->query("//span[@class='wpcs_lang'] | //span[@class='wpcs_current_lang']");
-        foreach ($spanNodes as $span) {
-            $a = $span->getElementsByTagName('a')->item(0);
-            parse_str(parse_url($a->getAttribute('href'), PHP_URL_QUERY), $variantArr);
-            $aProps[] = [
-                'id' => $span->getAttribute('id'),
-                'className' => $span->getAttribute('class'),
-                // 'variant' => $variantArr['variant'] ?? '',
-                'variant' => $a->getAttribute('langvar'),
-                'href' => $a->getAttribute('href'),
-                'title' => $a->getAttribute('title'),
-                'innerText' => $a->nodeValue
-            ];
-        }
-    } else if ($wpcs_translate_type == 1){
-        $aProps[] = $html;
-    }
-    
+	if ( $wpcs_translate_type == 0 ) {
+		$spanNodes = $xpath->query( "//span[@class='wpcs_lang'] | //span[@class='wpcs_current_lang']" );
+		foreach ( $spanNodes as $span ) {
+			$a = $span->getElementsByTagName( 'a' )->item( 0 );
+			parse_str( parse_url( $a->getAttribute( 'href' ), PHP_URL_QUERY ), $variantArr );
+			$aProps[] = [
+				'id'        => $span->getAttribute( 'id' ),
+				'className' => $span->getAttribute( 'class' ),
+				// 'variant' => $variantArr['variant'] ?? '',
+				'variant'   => $a->getAttribute( 'langvar' ),
+				'href'      => $a->getAttribute( 'href' ),
+				'title'     => $a->getAttribute( 'title' ),
+				'innerText' => $a->nodeValue
+			];
+		}
+	} else if ( $wpcs_translate_type == 1 ) {
+		$aProps[] = $html;
+	}
 
-    wp_localize_script('wpcs-block-script', 'wpc_switcher_navi_data', array('wpcs_navi' => $aProps, 'type_arr' => $wpcs_translate_type));
+
+	wp_localize_script( 'wpcs-block-script', 'wpc_switcher_navi_data', array(
+		'wpcs_navi' => $aProps,
+		'type_arr'  => $wpcs_translate_type
+	) );
 }
 
 /**
@@ -1613,51 +1630,51 @@ function my_plugin_enqueue_block_editor_assets() {
  * @since 1.1.13
  *
  */
-function wpcs_body_class($classes) {
-    global $wpcs_target_lang;
-    $classes[] = $wpcs_target_lang ? $wpcs_target_lang : "zh";
+function wpcs_body_class( $classes ) {
+	global $wpcs_target_lang;
+	$classes[] = $wpcs_target_lang ? $wpcs_target_lang : "zh";
 
-    return $classes;
+	return $classes;
 }
 
-add_filter("body_class", "wpcs_body_class");
+add_filter( "body_class", "wpcs_body_class" );
 
 /**
  * 自动修改html tag 的 lang=""标签为当前中文语言
  * @since 1.0
  *
  */
-function wpcs_locale($output, $doctype = 'html') {
-    global $wpcs_target_lang, $wpcs_langs;
-    $lang = get_bloginfo('language');
-    if ($wpcs_target_lang && strpos($lang, 'zh-') === 0) {
-        $lang   = $wpcs_langs[$wpcs_target_lang][3];
-        $output = preg_replace('/lang="[^"]+"/', "lang=\"{$lang}\"", $output);
-    }
+function wpcs_locale( $output, $doctype = 'html' ) {
+	global $wpcs_target_lang, $wpcs_langs;
+	$lang = get_bloginfo( 'language' );
+	if ( $wpcs_target_lang && strpos( $lang, 'zh-' ) === 0 ) {
+		$lang   = $wpcs_langs[ $wpcs_target_lang ][3];
+		$output = preg_replace( '/lang="[^"]+"/', "lang=\"{$lang}\"", $output );
+	}
 
-    return $output;
+	return $output;
 }
 
-add_filter('language_attributes', 'wpcs_locale');
+add_filter( 'language_attributes', 'wpcs_locale' );
 
 /**
  * add a wpcs_NC button to html editor toolbar.
  * @since 1.1.14
  */
 function wpcs_appthemes_add_quicktags() {
-    global $wpcs_options;
-    if ( ! empty($wpcs_options) && ! empty($wpcs_options['wpcs_no_conversion_qtag']) && wp_script_is('quicktags')) {
-        ?>
-      <script type="text/javascript">
-        //<![CDATA[
-        QTags.addButton('eg_wpcs_nc', 'wpcs_NC', '<!--wpcs_NC_START-->', '<!--wpcs_NC_END-->', null, 'WP Chinese Switcher DO-NOT Convert Tag', 120);
-        //]]>
-      </script>
-        <?php
-    }
+	global $wpcs_options;
+	if ( ! empty( $wpcs_options ) && ! empty( $wpcs_options['wpcs_no_conversion_qtag'] ) && wp_script_is( 'quicktags' ) ) {
+		?>
+        <script type="text/javascript">
+            //<![CDATA[
+            QTags.addButton('eg_wpcs_nc', 'wpcs_NC', '<!--wpcs_NC_START-->', '<!--wpcs_NC_END-->', null, 'WP Chinese Switcher DO-NOT Convert Tag', 120);
+            //]]>
+        </script>
+		<?php
+	}
 }
 
-add_action('admin_print_footer_scripts', 'wpcs_appthemes_add_quicktags');
+add_action( 'admin_print_footer_scripts', 'wpcs_appthemes_add_quicktags' );
 
 /**
  * Function executed when plugin is activated
@@ -1667,51 +1684,65 @@ add_action('admin_print_footer_scripts', 'wpcs_appthemes_add_quicktags');
  *
  */
 function wpcs_activate() {
-    $current_options = (array) get_option('wpcs_options');
-    $wpcs_options    = array(
-        'wpcs_search_conversion'       => 1,
-        'wpcs_used_langs'              => array('zh-hans', 'zh-hant', 'zh-cn', 'zh-hk', 'zh-sg', 'zh-tw'),
-        'wpcs_browser_redirect'        => 0,
-        'wpcs_auto_language_recong'    => 0,
-        'wpcs_flag_option'             => 1,
-        'wpcs_use_cookie_variant'      => 0,
-        'wpcs_use_fullpage_conversion' => 1,
-        'wpcs_trackback_plugin_author' => 0,
-        'wpcs_add_author_link'         => 0,
-        'wpcs_use_permalink'           => 0,
-        'wpcs_no_conversion_tag'       => '',
-        'wpcs_no_conversion_ja'        => 0,
-        'wpcs_no_conversion_qtag'      => 0,
-        'wpcs_engine'                  => 'mediawiki', // alternative: opencc
-        'nctip'                        => '',
-    );
+	$current_options = (array) get_option( 'wpcs_options' );
+	$wpcs_options    = array(
+		'wpcs_search_conversion'       => 1,
+		'wpcs_used_langs'              => array( 'zh-hans', 'zh-hant', 'zh-cn', 'zh-hk', 'zh-sg', 'zh-tw' ),
+		'wpcs_browser_redirect'        => 0,
+		'wpcs_auto_language_recong'    => 0,
+		'wpcs_flag_option'             => 1,
+		'wpcs_use_cookie_variant'      => 0,
+		'wpcs_use_fullpage_conversion' => 1,
+		'wpcs_trackback_plugin_author' => 0,
+		'wpcs_add_author_link'         => 0,
+		'wpcs_use_permalink'           => 0,
+		'wpcs_no_conversion_tag'       => '',
+		'wpcs_no_conversion_ja'        => 0,
+		'wpcs_no_conversion_qtag'      => 0,
+		'wpcs_engine'                  => 'mediawiki', // alternative: opencc
+		'nctip'                        => '',
+	);
 
-    foreach ($current_options as $key => $value) {
-        if (isset($wpcs_options[$key])) {
-            $wpcs_options[$key] = $value;
-        }
-    }
+	foreach ( $current_options as $key => $value ) {
+		if ( isset( $wpcs_options[ $key ] ) ) {
+			$wpcs_options[ $key ] = $value;
+		}
+	}
 
-    foreach (
-        array(
-            'zh-hans' => "hanstip",
-            'zh-hant' => "hanttip",
-            'zh-cn'   => "cntip",
-            'zh-hk'   => "hktip",
-            'zh-sg'   => "sgtip",
-            'zh-tw'   => "twtip",
-            'zh-my'   => "mytip",
-            'zh-mo'   => "motip",
-            'zh-jp'   => "jptip"
-        ) as $lang => $tip
-    ) {
-        if ( ! empty($current_options[$tip])) {
-            $wpcs_options[$tip] = $current_options[$tip];
-        }
-    }
+	foreach (
+		array(
+			'zh-hans' => "hanstip",
+			'zh-hant' => "hanttip",
+			'zh-cn'   => "cntip",
+			'zh-hk'   => "hktip",
+			'zh-sg'   => "sgtip",
+			'zh-tw'   => "twtip",
+			'zh-my'   => "mytip",
+			'zh-mo'   => "motip",
+			'zh-jp'   => "jptip"
+		) as $lang => $tip
+	) {
+		if ( ! empty( $current_options[ $tip ] ) ) {
+			$wpcs_options[ $tip ] = $current_options[ $tip ];
+		}
+	}
 
-    //WP will automaticlly add a option if it doesn't exists( when this plugin is firstly being installed).
-    update_option('wpcs_options', $wpcs_options);
+	//WP will automaticlly add a option if it doesn't exists( when this plugin is firstly being installed).
+	update_option( 'wpcs_options', $wpcs_options );
 }
 
-register_activation_hook(__FILE__, 'wpcs_activate');
+register_activation_hook( __FILE__, 'wpcs_activate' );
+
+add_action( 'wp_ajax_nopriv_my_action', 'my_ajax_handler_function' );
+
+add_action( 'rest_api_init', function () {
+	set_wpcs_langs_urls();
+
+	register_rest_route( 'wpchinese-switcher/v1', '/get_style_html/', array(
+		'methods'             => 'GET',
+		'callback'            => function () {
+			return new WP_REST_Response( wpcs_output_navi(), 200 );
+		},
+		'permission_callback' => '__return_true',
+	) );
+} );
